@@ -1,0 +1,11 @@
+{
+	"author": "Voltaism & DeadlyKungFu.Ninja",
+	"version": "1.0",
+        "onset_build": "1.0.3",
+        "server_scripts": [
+                "server/racing.lua"
+        ],
+        "client_scripts": [
+                "client/cl_racing.lua"
+        ]
+}
