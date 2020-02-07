@@ -2,6 +2,8 @@ local checkpoints = nil
 
 local waypoint = nil
 
+local curindex = 1
+
 AddEvent("OnRenderHUD",function()
     local veh = GetPlayerVehicle(GetPlayerId())
     if veh~=0 then
@@ -25,17 +27,21 @@ AddRemoteEvent("hidecheckpoint",function(id)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
     if checkpoints[curindex] then
-     waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex-1)
+        if curindex==#checkpoints then
+            waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Finish Line")
+        else
+          waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+        end
     end
 end)
 
 AddRemoteEvent("checkpointstbl",function(tbl)
     checkpoints=tbl
-    curindex = 2
+    curindex = 1
     if waypoint==nil then
-       waypoint=CreateWaypoint(tbl[2][1], tbl[2][2], tbl[2][3], "Checkpoint " .. curindex-1)
+       waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
     else
         DestroyWaypoint(waypoint)
-        waypoint=CreateWaypoint(tbl[2][1], tbl[2][2], tbl[2][3], "Checkpoint " .. curindex-1)
+        waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
     end
 end)
