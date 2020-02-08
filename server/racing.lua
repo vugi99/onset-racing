@@ -1,6 +1,7 @@
 local nitro = true
 local dev = true
 local time_after_finish_ms = 60000
+local time_bef_start_s = 6
 
 local plyvehs = {}
 local checkpoints = nil
@@ -148,7 +149,7 @@ function changerace()
       tbl.ply = v
       tbl.number = 0
       table.insert(playerscheckpoints,tbl)
-      CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]])
+      CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
       SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
       SetPlayerHealth(v, 0)
       CallRemoteEvent(v,"classement_update",i,GetPlayerCount())

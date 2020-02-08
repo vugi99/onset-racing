@@ -8,6 +8,9 @@ local waypoint = nil
 local place = nil
 local plycount = nil
 
+local decompte = nil
+local decompte_s = nil
+
 local curindex = 1
 
 local time_until_restart = nil
@@ -28,6 +31,9 @@ AddEvent("OnRenderHUD",function()
     end
     if time_until_restart then
         DrawText(0,500,"Changing race in " .. tostring(time_until_restart) .. " ms")
+    end
+    if decompte_s~=nil then
+        DrawText(0,475,"Starting in " .. tostring(decompte_s) .. " s")
     end
 end)
 
@@ -68,11 +74,25 @@ AddRemoteEvent("classement_update",function(placer,playercountr)
     plycount=playercountr
 end)
 
-AddRemoteEvent("checkpointstbl",function(tbl)
+function decompte_update()
+   if decompte_s-1 > 0 then
+        decompte_s=decompte_s-1
+   else
+    SetIgnoreMoveInput(false)
+    decompte_s=nil
+    DestroyTimer(decompte)
+    decompte=nil
+   end
+end
+
+AddRemoteEvent("checkpointstbl",function(tbl,temps)
     checkpoints=tbl
     curindex = 1
     compteur_time=-500
     compteur_state=true
+    decompte_s = temps
+    SetIgnoreMoveInput(true)
+    decompte = CreateTimer(decompte_update,temps*1000/temps)
     if waypoint==nil then
        waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
     else
@@ -126,4 +146,5 @@ AddRemoteEvent("setClothe", setClothe)
 AddEvent("OnPlayerStreamIn", function(player, otherplayer)
     CallRemoteEvent("Askclothes", player, otherplayer)
 end)
+
 
