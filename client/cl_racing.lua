@@ -82,14 +82,14 @@ function decompte_update()
     decompte_s=nil
     DestroyTimer(decompte)
     decompte=nil
+    compteur_time=0
+    compteur_state=true
    end
 end
 
 AddRemoteEvent("checkpointstbl",function(tbl,temps)
     checkpoints=tbl
     curindex = 1
-    compteur_time=-500
-    compteur_state=true
     decompte_s = temps
     SetIgnoreMoveInput(true)
     decompte = CreateTimer(decompte_update,temps*1000/temps)
