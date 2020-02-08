@@ -1,5 +1,6 @@
 local nitro = true
 local dev = true
+local time_after_finish_ms = 60000
 
 local plyvehs = {}
 local checkpoints = nil
@@ -263,8 +264,13 @@ AddEvent("OnPlayerQuit",function(ply)
    end
 end)
 
+
+
 function checktorestart()
    if #playerscheckpoints==0 then
+      for i,v in ipairs(GetAllPlayers()) do
+         CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,true)
+      end
       if #racesnumbers==currace then
          currace=1
          changerace()
@@ -272,8 +278,20 @@ function checktorestart()
          currace=currace+1
          changerace()
       end
+   else
+      if #finishclassement==1 then
+         for i,v in ipairs(GetAllPlayers()) do
+            CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,false)
+         end
+         Delay(time_after_finish_ms,function()
+            playerscheckpoints={}
+            checktorestart()
+         end)
+      end
    end
 end
+
+
 
 function timercheck()
    for i,v in ipairs(playerscheckpoints) do

@@ -7,6 +7,8 @@ local plycount = 1
 
 local curindex = 1
 
+local time_until_restart = nil
+
 AddEvent("OnRenderHUD",function()
     local veh = GetPlayerVehicle(GetPlayerId())
     if veh~=0 then
@@ -16,6 +18,9 @@ AddEvent("OnRenderHUD",function()
     end
     DrawText(0,400,"R = return your car")
     DrawText(0,450,"Position : " .. place .. "/" .. plycount)
+    if time_until_restart then
+        DrawText(0,500,"Changing race in " .. tostring(time_until_restart) .. " ms")
+    end
 end)
 
 function disablecollisions()
@@ -65,7 +70,32 @@ AddEvent("OnKeyPress",function(key)
     end
 end)
 
+local showed_timer = nil
 
+function update_time()
+    if time_until_restart-50 > 0 then
+       time_until_restart=time_until_restart-50
+   else
+       if showed_timer then
+          DestroyTimer(showed_timer)
+          showed_timer=nil
+       end
+       time_until_restart=nil
+    end
+end
+
+AddRemoteEvent("Start_finish_timer", function(time_ms,isdestroy)
+    if isdestroy then
+        if showed_timer then
+            DestroyTimer(showed_timer)
+            showed_timer=nil
+         end
+         time_until_restart=nil
+    else
+       time_until_restart=time_ms
+       showed_timer = CreateTimer(update_time,50)
+    end
+end) 
 
 function setClothe(player, clothId) -- https://github.com/DKFN/ogk_gg/
 	SetPlayerClothingPreset(player, clothId)
@@ -75,3 +105,4 @@ AddRemoteEvent("setClothe", setClothe)
 AddEvent("OnPlayerStreamIn", function(player, otherplayer)
     CallRemoteEvent("Askclothes", player, otherplayer)
 end)
+
