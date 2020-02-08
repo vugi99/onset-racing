@@ -1,5 +1,5 @@
 local nitro = true
-
+local dev = true
 
 local plyvehs = {}
 local checkpoints = nil
@@ -14,7 +14,8 @@ local currace = 1
 
 local racesnumbers = {
    "first",
-   "gudrace"
+   "gudrace",
+   "city"
 }
 --[[
   spawns["name"] = {
@@ -46,6 +47,17 @@ local spawns = {}
       {-73024,25191,4650},
       {-74024,26202,4650},
       {-74024,25732,4650}
+   }
+   spawns["city"] = {
+      0,
+      {193593,180589,1250},
+      {193593,180021,1250},
+      {192593,180589,1250},
+      {192593,180021,1250},
+      {191593,180589,1250},
+      {191593,180021,1250},
+      {190593,180589,1250},
+      {190593,180021,1250},
    }
 
 local races = {}
@@ -82,6 +94,29 @@ local races = {}
       {-105833,41636,4398},
       {-85590,32032,4609,65},
     }
+    races["city"] = {
+      {198044,181777,1197},
+      {197685,191434,1194},
+      {200116,196502,1194},
+      {209303,198484,1194},
+      {204302,202415,1194},
+      {198086,207467,1195},
+      {190838,210569,1194},
+      {184727,213379,1194},
+      {175976,209111,1195},
+      {153629,209116,1195},
+      {145182,201537,1185},
+      {151173,196564,367},
+      {153634,190170,1186},
+      {171373,189292,1210},
+      {176135,186995,1195},
+      {181239,184525,1194},
+      {184929,182301,1194},
+      {187331,175054,1357},
+      {189842,166401,2016},
+      {187990,160101,3439},
+      {178639,156436,4730,-45},
+    }
 
 function createcheckpoints(mapname)
    if checkpoints then
@@ -103,8 +138,8 @@ end
 
 function changerace()
    finishclassement = {}
+   createcheckpoints(racesnumbers[currace])
    for i,v in ipairs(GetAllPlayers()) do
-      createcheckpoints(racesnumbers[currace])
       local tbl = {}
       tbl.ply = v
       tbl.number = 0
@@ -293,7 +328,7 @@ AddRemoteEvent("returncar_racing",function(ply)
    SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
 end)
 
--- modifié a partir de https://github.com/DKFN/ogk_gg/
+-- modified from https://github.com/DKFN/ogk_gg/
 function OnPlayerSpawncloth(playerid)
    playersclothes[playerid] = {}
    playersclothes[playerid].cloth = 15
@@ -314,4 +349,14 @@ local function SendPlayerSkin(requesterId, playerId)
    end
 end
 AddRemoteEvent("Askclothes", SendPlayerSkin)
+
+AddCommand("race",function(ply,id)
+    if dev then
+        if id ~= nil then
+           currace=tonumber(id)
+           playerscheckpoints={}
+           changerace()
+        end
+    end
+end)
 
