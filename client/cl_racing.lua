@@ -2,6 +2,9 @@ local checkpoints = nil
 
 local waypoint = nil
 
+local place = 1
+local plycount = 1
+
 local curindex = 1
 
 AddEvent("OnRenderHUD",function()
@@ -11,6 +14,8 @@ AddEvent("OnRenderHUD",function()
         local ScreenX, ScreenY = GetScreenSize()
         DrawText(ScreenX-75,ScreenY-25,"Speed : " .. math.floor(GetVehicleForwardSpeed(veh)+0.5))
     end
+    DrawText(0,400,"R = return your car")
+    DrawText(0,450,"Position : " .. place .. "/" .. plycount)
 end)
 
 function disablecollisions()
@@ -35,6 +40,11 @@ AddRemoteEvent("hidecheckpoint",function(id)
     end
 end)
 
+AddRemoteEvent("classement_update",function(placer,playercountr)
+    place=placer
+    plycount=playercountr
+end)
+
 AddRemoteEvent("checkpointstbl",function(tbl)
     checkpoints=tbl
     curindex = 1
@@ -44,4 +54,24 @@ AddRemoteEvent("checkpointstbl",function(tbl)
         DestroyWaypoint(waypoint)
         waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
     end
+end)
+
+AddEvent("OnKeyPress",function(key)
+    local veh = GetPlayerVehicle(GetPlayerId()) 
+    if veh~=0 then
+         if key == "R" then
+            CallRemoteEvent("returncar_racing")
+         end
+    end
+end)
+
+
+
+function setClothe(player, clothId) -- https://github.com/DKFN/ogk_gg/
+	SetPlayerClothingPreset(player, clothId)
+end
+AddRemoteEvent("setClothe", setClothe) 
+
+AddEvent("OnPlayerStreamIn", function(player, otherplayer)
+    CallRemoteEvent("Askclothes", player, otherplayer)
 end)

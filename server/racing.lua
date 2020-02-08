@@ -1,7 +1,14 @@
+local nitro = true
+
+
 local plyvehs = {}
 local checkpoints = nil
 
 local playerscheckpoints = {}
+
+local finishclassement = {}
+
+local playersclothes = {}
 
 local currace = 1
 
@@ -95,6 +102,7 @@ function createcheckpoints(mapname)
 end
 
 function changerace()
+   finishclassement = {}
    for i,v in ipairs(GetAllPlayers()) do
       createcheckpoints(racesnumbers[currace])
       local tbl = {}
@@ -104,6 +112,7 @@ function changerace()
       CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]])
       SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
       SetPlayerHealth(v, 0)
+      CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
    end
 end
 
@@ -142,7 +151,7 @@ function spawnveh(ply,id,first)
    end
    SetVehicleLicensePlate(veh, "RACING")
    SetVehicleRespawnParams(veh, false)
-   AttachVehicleNitro(veh,true)
+   AttachVehicleNitro(veh,nitro)
    local tbin = {}
    tbin.ply = ply
    tbin.vid = veh
@@ -203,8 +212,19 @@ AddEvent("OnPlayerQuit",function(ply)
          table.remove(playerscheckpoints,i)
        end
    end
-   if #playerscheckpoints==0 then
-      checkpoints=nil
+   for i,v in ipairs(finishclassement) do
+      if v == ply then
+        table.remove(finishclassement,i)
+      end
+  end
+  table.remove(playersclothes,ply)
+   if GetPlayerCount()<2 then
+      for i,v in ipairs(checkpoints) do
+         DestroyObject(v)
+       end
+       checkpoints=nil
+   else
+       checktorestart()
    end
 end)
 
@@ -220,25 +240,78 @@ function checktorestart()
    end
 end
 
-AddEvent("OnGameTick",function()
+function timercheck()
    for i,v in ipairs(playerscheckpoints) do
-   if GetPlayerVehicle(v.ply)~=0 then
-      local veh = GetPlayerVehicle(v.ply)
-     for i2,vc in ipairs(checkpoints) do
-        if i2==v.number+1 then
-         local x,y,z = GetVehicleLocation(veh)
-         local x2,y2,z2 = GetObjectLocation(vc)
-         if GetDistance2D(x, y, x2, y2)<750 then
-            v.number=i2
-            CallRemoteEvent(v.ply,"hidecheckpoint",vc)
-            if i2 == #checkpoints then
-               table.remove(playerscheckpoints,i)
-               checktorestart()
+      if GetPlayerVehicle(v.ply)~=0 then
+         local veh = GetPlayerVehicle(v.ply)
+        for i2,vc in ipairs(checkpoints) do
+           if i2==v.number+1 then
+            local x,y,z = GetVehicleLocation(veh)
+            if z>0 then
+            local x2,y2,z2 = GetObjectLocation(vc)
+            if GetDistance2D(x, y, x2, y2)<750 then
+               v.number=i2
+               CallRemoteEvent(v.ply,"hidecheckpoint",vc)
+               local place = 0
+               
+               if i2 == #checkpoints then
+                  table.insert(finishclassement,v.ply)
+                  place = #finishclassement
+                  table.remove(playerscheckpoints,i)
+                  checktorestart()
+               else
+                  place = #finishclassement+1
+                  for iclass,vclass in ipairs(playerscheckpoints) do
+                     if v.ply ~= vclass.ply then
+                        if vclass.number >= v.number then
+                           place=place+1
+                        end
+                     end
+                  end
+               end
+               CallRemoteEvent(v.ply,"classement_update",place,GetPlayerCount())
+               
             end
+         else
+            AddPlayerChat(v.ply,"Reseting your car")
+            SetPlayerHealth(v.ply, 0)
          end
+           end
         end
-     end
-   end
-   end
+      end
+      end
+end
+AddEvent("OnPackageStart",function()
+   CreateTimer(timercheck, 50)
 end)
+
+AddRemoteEvent("returncar_racing",function(ply)
+   local veh = GetPlayerVehicle(ply)
+   local rx,ry,rz = GetVehicleRotation(veh)
+   SetVehicleRotation(veh, 0,ry,0)
+   SetVehicleLinearVelocity(veh, 0, 0, 0 ,true)
+   SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
+end)
+
+-- modifié a partir de https://github.com/DKFN/ogk_gg/
+function OnPlayerSpawncloth(playerid)
+   playersclothes[playerid] = {}
+   playersclothes[playerid].cloth = 15
+   for _, v in ipairs(GetAllPlayers()) do 
+       CallRemoteEvent(v, "setClothe", playerid, playersclothes[playerid].cloth) 
+       CallRemoteEvent(playerid, "setClothe", v, playersclothes[v].cloth) 
+   end
+end
+AddEvent("OnPlayerSpawn", OnPlayerSpawncloth)
+
+local function SendPlayerSkin(requesterId, playerId)
+   if playersclothes[playerId] and playersclothes[playerId].cloth then
+       CallRemoteEvent(requesterId, "setClothe", playerId, playersclothes[playerId].cloth)
+   else
+       Delay(2000, function() 
+           SendPlayerSkin(requesterId, playerId)
+       end)
+   end
+end
+AddRemoteEvent("Askclothes", SendPlayerSkin)
 
