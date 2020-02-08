@@ -3,9 +3,11 @@
 	"version": "1.0",
         "onset_build": "1.0.3",
         "server_scripts": [
-                "server/racing.lua"
+                "server/racing.lua",
+                "server/spec.lua"
         ],
         "client_scripts": [
-                "client/cl_racing.lua"
+                "client/cl_racing.lua",
+                "client/cl_spec.lua"
         ]
 }

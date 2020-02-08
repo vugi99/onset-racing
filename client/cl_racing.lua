@@ -1,9 +1,12 @@
 local checkpoints = nil
 
+local compteur_state = nil
+local compteur_time = nil
+
 local waypoint = nil
 
-local place = 1
-local plycount = 1
+local place = nil
+local plycount = nil
 
 local curindex = 1
 
@@ -17,7 +20,12 @@ AddEvent("OnRenderHUD",function()
         DrawText(ScreenX-75,ScreenY-25,"Speed : " .. math.floor(GetVehicleForwardSpeed(veh)+0.5))
     end
     DrawText(0,400,"R = return your car")
-    DrawText(0,450,"Position : " .. place .. "/" .. plycount)
+    if (compteur_time~=nil ) then
+        DrawText(0,425,"Time : " .. compteur_time .. " ms")
+     end
+    if (place~=nil and plycount~=nil ) then
+       DrawText(0,450,"Position : " .. place .. "/" .. plycount)
+    end
     if time_until_restart then
         DrawText(0,500,"Changing race in " .. tostring(time_until_restart) .. " ms")
     end
@@ -28,8 +36,16 @@ function disablecollisions()
     GetObjectActor(v):SetActorEnableCollision(false)
    end
 end
+
+function update_compteur()
+   if (compteur_time and compteur_state) then
+      compteur_time=compteur_time+100
+   end
+end
+
 AddEvent("OnPackageStart",function()
     CreateTimer(disablecollisions, 250)
+    CreateTimer(update_compteur, 100)
 end)
 
 AddRemoteEvent("hidecheckpoint",function(id)
@@ -39,7 +55,9 @@ AddRemoteEvent("hidecheckpoint",function(id)
     if checkpoints[curindex] then
         if curindex==#checkpoints then
             waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Finish Line")
-        else
+        elseif curindex==#checkpoints+1 then
+            compteur_state=false
+        elseif curindex<#checkpoints then
           waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
         end
     end
@@ -53,6 +71,8 @@ end)
 AddRemoteEvent("checkpointstbl",function(tbl)
     checkpoints=tbl
     curindex = 1
+    compteur_time=-500
+    compteur_state=true
     if waypoint==nil then
        waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
     else
@@ -96,6 +116,7 @@ AddRemoteEvent("Start_finish_timer", function(time_ms,isdestroy)
        showed_timer = CreateTimer(update_time,50)
     end
 end) 
+
 
 function setClothe(player, clothId) -- https://github.com/DKFN/ogk_gg/
 	SetPlayerClothingPreset(player, clothId)
