@@ -22,7 +22,9 @@ AddEvent("OnRenderHUD",function()
         local ScreenX, ScreenY = GetScreenSize()
         DrawText(ScreenX-75,ScreenY-25,"Speed : " .. math.floor(GetVehicleForwardSpeed(veh)+0.5))
     end
-    DrawText(0,400,"R = return your car")
+    if GetPlayerVehicle(GetPlayerId()) ~= 0 then
+        DrawText(0,400,"R = return your car")
+    end
     if (compteur_time~=nil ) then
         DrawText(0,425,"Time : " .. compteur_time .. " ms")
      end

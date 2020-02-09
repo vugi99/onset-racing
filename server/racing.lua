@@ -109,6 +109,8 @@ AddEvent("OnPlayerSpawn", function(ply)
       if v.ply == ply then
          found=true
          spawnveh(ply,12,true)
+         v.number = 0
+         CallRemoteEvent(ply,"reset_checkpoints")
       end
    end
    if not found then
@@ -125,7 +127,15 @@ AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
             if v.ply == ply then
                DestroyVehicle(v.vid)
                table.remove(plyvehs,i)
-               speclogic(ply,playerscheckpoints[1].ply)
+               local ping = GetPlayerPing(ply)
+               if ping == 0 then
+                   ping = 50
+                else
+                ping=ping*6
+               end
+               Delay(ping,function()
+                  speclogic(ply,playerscheckpoints[1].ply)
+               end)
             end
          end
          SetPlayerPropertyValue(ply,"leavingtospec",nil,false)
