@@ -102,3 +102,8 @@ AddEvent("OnRenderHUD", function()
         DrawText(5, 400, "Press E to change the spectated player")
     end
 end)
+
+function OnScriptError(message)
+     AddPlayerChatAll('<span color="#ff0000bb" style="bold" size="10">'..message..'</>')
+end
+AddEvent("OnScriptError", OnScriptError)

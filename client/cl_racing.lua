@@ -146,13 +146,3 @@ AddRemoteEvent("reset_checkpoints",function()
 end)
 
 
-function setClothe(player, clothId) -- https://github.com/DKFN/ogk_gg/
-	SetPlayerClothingPreset(player, clothId)
-end
-AddRemoteEvent("setClothe", setClothe) 
-
-AddEvent("OnPlayerStreamIn", function(player, otherplayer)
-    CallRemoteEvent("Askclothes", player, otherplayer)
-end)
-
-

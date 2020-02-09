@@ -6,11 +6,11 @@ local time_bef_start_s = 6
 local plyvehs = {}
 local checkpoints = nil
 
+local finished = nil
+
 local playerscheckpoints = {}
 
 local finishclassement = {}
-
-local playersclothes = {}
 
 local currace = 1
 
@@ -370,7 +370,6 @@ AddEvent("OnPlayerQuit",function(ply)
         table.remove(finishclassement,i)
       end
   end
-  table.remove(playersclothes,ply)
    if GetPlayerCount()<2 then
       for i,v in ipairs(checkpoints) do
          DestroyObject(v)
@@ -388,6 +387,7 @@ function checktorestart()
       for i,v in ipairs(GetAllPlayers()) do
          CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,true)
       end
+      finished=true
       if #racesnumbers==currace then
          currace=1
          changerace()
@@ -400,9 +400,12 @@ function checktorestart()
          for i,v in ipairs(GetAllPlayers()) do
             CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,false)
          end
+         finished=false
          Delay(time_after_finish_ms,function()
+            if finished == false then
             playerscheckpoints={}
             checktorestart()
+            end
          end)
       end
    end
@@ -475,28 +478,6 @@ AddRemoteEvent("returncar_racing",function(ply)
    SetVehicleLinearVelocity(veh, 0, 0, 0 ,true)
    SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
 end)
-
--- modified from https://github.com/DKFN/ogk_gg/
-function OnPlayerSpawncloth(playerid)
-   playersclothes[playerid] = {}
-   playersclothes[playerid].cloth = 15
-   for _, v in ipairs(GetAllPlayers()) do 
-       CallRemoteEvent(v, "setClothe", playerid, playersclothes[playerid].cloth) 
-       CallRemoteEvent(playerid, "setClothe", v, playersclothes[v].cloth) 
-   end
-end
-AddEvent("OnPlayerSpawn", OnPlayerSpawncloth)
-
-local function SendPlayerSkin(requesterId, playerId)
-   if playersclothes[playerId] and playersclothes[playerId].cloth then
-       CallRemoteEvent(requesterId, "setClothe", playerId, playersclothes[playerId].cloth)
-   else
-       Delay(2000, function() 
-           SendPlayerSkin(requesterId, playerId)
-       end)
-   end
-end
-AddRemoteEvent("Askclothes", SendPlayerSkin)
 
 AddCommand("race",function(ply,id)
     if dev then

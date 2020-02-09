@@ -13,7 +13,7 @@ function speclogic(cmdply,ply)
         table.insert(spectable,tblspecin)
         AddPlayerChat(cmdply,"You are spectating " .. GetPlayerName(ply))
         local x, y, z = GetPlayerLocation(ply)
-        CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply)
+        CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
 end
 
 AddEvent("OnPlayerQuit",function(ply)
