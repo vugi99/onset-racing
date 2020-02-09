@@ -228,6 +228,7 @@ function timercheck()
    for i,v in ipairs(playerscheckpoints) do
       if GetPlayerVehicle(v.ply)~=0 then
          local veh = GetPlayerVehicle(v.ply)
+         if IsValidVehicle(veh) then
         for i2,vc in ipairs(checkpoints) do
            if i2==v.number+1 then
             local x,y,z = GetVehicleLocation(veh)
@@ -269,11 +270,12 @@ function timercheck()
            end
         end
       end
+   end
       end
 end
 
 AddEvent("OnPackageStart",function()
-   CreateTimer(timercheck, 50)
+   CreateTimer(timercheck, 35)
 end)
 
 AddRemoteEvent("returncar_racing",function(ply)
@@ -299,7 +301,7 @@ AddRemoteEvent("changespec",function(ply,spectated)
       local lookindex = false
     for i,v in ipairs(playerscheckpoints) do
       if lookindex then
-        speclogic(ply,playerscheckpoints[i].ply)
+        speclogic(ply,v.ply)
         break
       end
        if v.ply==spectated then
@@ -309,11 +311,7 @@ AddRemoteEvent("changespec",function(ply,spectated)
                break
             end
           else
-            if playerscheckpoints[i+1] then
-               speclogic(ply,playerscheckpoints[i+1].ply)
-            else
                lookindex=true
-            end
           end
        end
     end

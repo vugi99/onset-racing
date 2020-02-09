@@ -1,6 +1,7 @@
 local spectable = {}
 
 function speclogic(cmdply,ply)
+    print(cmdply,ply)
     for i,v in ipairs(spectable) do
         if v.id == cmdply then
          table.remove(spectable,i)

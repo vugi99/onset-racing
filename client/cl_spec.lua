@@ -48,6 +48,7 @@ function stopspec(needtoreask)
 end
 
 AddEvent("OnGameTick",function(ds)
+    AddPlayerChat("playertospec " .. tostring(specply) .. " specstate " .. tostring(spec))
     if spec then
         if IsValidPlayer(specply) then
             local x, y, z = GetPlayerLocation(specply)
