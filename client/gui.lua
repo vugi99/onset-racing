@@ -21,5 +21,5 @@ CreateTimer(function()
         local plySpeed = math.floor(GetVehicleForwardSpeed(veh)+0.5)
         ExecuteWebJS(gui, 'NotifySpeed("'..plySpeed..'")')
     end
-end, 100)
+end, 20)
 
