@@ -36,7 +36,7 @@ function stopspec(needtoreask)
     end
     if spec then
         if needtoreask then
-            CallRemoteEvent("changespec",GetPlayerId(),specply)
+            CallRemoteEvent("changespec",specply)
          end
     needtorefirst=false
     spec=false
@@ -94,7 +94,7 @@ AddRemoteEvent("StopSpec",function()
 end)
 AddEvent("OnKeyPress",function(key)
     if (spec and key=="E") then
-        CallRemoteEvent("changespec",GetPlayerId(),specply)
+        CallRemoteEvent("changespec",specply)
     end
 end)
 
