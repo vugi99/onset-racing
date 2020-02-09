@@ -417,9 +417,11 @@ function timercheck()
             if GetDistance2D(x, y, x2, y2)<750 then
                v.number=i2
                CallRemoteEvent(v.ply,"hidecheckpoint",vc)
-               
+               local place = 0
+
                if i2 == #checkpoints then
                   table.insert(finishclassement,v.ply)
+                  place = #finishclassement
                   table.remove(playerscheckpoints,i)
                   if #playerscheckpoints>0 then
                      for i,vp in ipairs(plyvehs) do
@@ -432,12 +434,24 @@ function timercheck()
                      speclogic(ply,playerscheckpoints[1].ply)
                   end
                   checktorestart()
+               else
+                  place = #finishclassement+1
+                  for iclass,vclass in ipairs(playerscheckpoints) do
+                     if v.ply ~= vclass.ply then
+                        if vclass.number >= v.number then
+                           place=place+1
+                        end
+                     end
+                  end
                end
+               CallRemoteEvent(v.ply,"classement_update",place,GetPlayerCount())
                
             end
          else
             AddPlayerChat(v.ply,"Reseting your car")
+            v.number = 0
             SetPlayerHealth(v.ply, 0)
+            CallRemoteEvent(v.ply,"reset_checkpoints")
          end
            end
         end
@@ -445,43 +459,8 @@ function timercheck()
       end
 end
 
-function classement()
-   for i,v in ipairs(GetAllPlayers()) do
-      local place = 0
-   local hasfinished = nil
-   local finishindex = 0
-   local numberchecks = 0
-      for ic,vc in ipairs(playerscheckpoints) do
-         if v==vc.ply then
-            hasfinished=false
-            numberchecks=vc.number
-         end
-      end
-      for ic,vc in ipairs(finishclassement) do
-         if v==vc then
-            hasfinished=true
-            finishindex=ic
-         end
-      end
-      if hasfinished==true then
-         place=finishindex
-      elseif hasfinished==false then
-         place = #finishclassement+1
-         for ic,vc in ipairs(playerscheckpoints) do
-            if v~=vc.ply then
-               if vc.number >= numberchecks then
-                  place=place+1
-               end
-            end
-         end
-      end
-      CallRemoteEvent(v,"classement_update",place,GetPlayerCount())
-   end
-end
-
 AddEvent("OnPackageStart",function()
    CreateTimer(timercheck, 50)
-   CreateTimer(classement, 1000)
 end)
 
 AddRemoteEvent("returncar_racing",function(ply)

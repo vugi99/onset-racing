@@ -113,8 +113,8 @@ end)
 local showed_timer = nil
 
 function update_time()
-    if time_until_restart-50 > 0 then
-       time_until_restart=time_until_restart-50
+    if time_until_restart-100 > 0 then
+       time_until_restart=time_until_restart-100
    else
        if showed_timer then
           DestroyTimer(showed_timer)
@@ -133,9 +133,19 @@ AddRemoteEvent("Start_finish_timer", function(time_ms,isdestroy)
          time_until_restart=nil
     else
        time_until_restart=time_ms
-       showed_timer = CreateTimer(update_time,50)
+       showed_timer = CreateTimer(update_time,100)
     end
 end) 
+
+AddRemoteEvent("reset_checkpoints",function()
+    curindex = 1
+    if waypoint==nil then
+        waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+     else
+         DestroyWaypoint(waypoint)
+         waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+     end
+end)
 
 
 function setClothe(player, clothId) -- https://github.com/DKFN/ogk_gg/
