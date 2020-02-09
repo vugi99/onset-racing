@@ -233,8 +233,7 @@ function timercheck()
            if i2==v.number+1 then
             local x,y,z = GetVehicleLocation(veh)
             if z>0 then
-            local x2,y2,z2 = GetObjectLocation(vc)
-            if GetDistance2D(x, y, x2, y2)<750 then
+            if GetDistance2D(x, y, races[racesnumbers[currace]][i2][1], races[racesnumbers[currace]][i2][2])<750 then
                v.number=i2
                CallRemoteEvent(v.ply,"hidecheckpoint",vc)
                local place = 0
