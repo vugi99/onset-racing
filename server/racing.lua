@@ -33,9 +33,6 @@ function createcheckpoints(mapname)
 end
 
 function changerace()
-   for i,v in ipairs(finishclassement) do
-       CallRemoteEvent(v,"StopSpec")
-   end
    finishclassement = {}
    createcheckpoints(racesnumbers[currace])
    for i,v in ipairs(GetAllPlayers()) do
@@ -46,6 +43,7 @@ function changerace()
       CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
       SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
       SetPlayerHealth(v, 0)
+      CallRemoteEvent(v,"StopSpec")
       CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
    end
 end
