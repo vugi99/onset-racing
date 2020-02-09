@@ -61,10 +61,13 @@ AddRemoteEvent("hidecheckpoint",function(id)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
         if curindex==#checkpoints then
+            CreateSound("sounds/checkpoint.mp3")
             waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Finish Line")
         elseif curindex==#checkpoints+1 then
             compteur_state=false
+            CreateSound("sounds/race_end.mp3")
         elseif curindex<#checkpoints then
+            CreateSound("sounds/checkpoint.mp3")
           waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
         end
 end)
@@ -77,7 +80,19 @@ end)
 function decompte_update()
    if decompte_s-1 > 0 then
         decompte_s=decompte_s-1
+        if decompte_s == 3 then
+            local sound = CreateSound("sounds/race_start.mp3")
+            SetSoundVolume(sound, 0.5)
+        elseif decompte_s == 2 then
+            local sound = CreateSound("sounds/race_start.mp3")
+            SetSoundVolume(sound, 0.75)
+        elseif decompte_s == 1 then
+            local sound = CreateSound("sounds/race_start.mp3")
+            SetSoundVolume(sound, 1)
+        end
    else
+    local sound = CreateSound("sounds/race_start.mp3")
+    SetSoundVolume(sound, 1.5)
     SetIgnoreMoveInput(false)
     decompte_s=nil
     DestroyTimer(decompte)
