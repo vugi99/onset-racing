@@ -99,7 +99,7 @@ end)
 
 AddEvent("OnRenderHUD", function()
     if spec then
-        DrawText(5, 400, "Press E to change the spectated player")
+        DrawText(5, 350, "Press E to change the spectated player")
     end
 end)
 

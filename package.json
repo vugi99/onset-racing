@@ -5,7 +5,8 @@
         "server_scripts": [
                 "server/racing.lua",
                 "server/spec.lua",
-                "server/clothes.lua"
+                "server/clothes.lua",
+                "server/races.lua"
         ],
         "client_scripts": [
                 "client/cl_racing.lua",
