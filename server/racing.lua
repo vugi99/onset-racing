@@ -114,7 +114,15 @@ AddEvent("OnPlayerSpawn", function(ply)
       end
    end
    if not found then
-      speclogic(ply,playerscheckpoints[1].ply)
+      local ping = GetPlayerPing(ply)
+      if ping == 0 then
+          ping = 50
+      else
+         ping=ping*6
+      end
+      Delay(ping,function()
+         speclogic(ply,playerscheckpoints[1].ply)
+      end)
    end
 end)
 
