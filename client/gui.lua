@@ -16,8 +16,9 @@ end)
 
 -- Timers 
 CreateTimer(function()
-    if gui then
-        local veh = GetPlayerVehicle(GetPlayerId())
+    local playerId = GetPlayerId()
+    if gui and IsPlayerInVehicle(playerId) then
+        local veh = GetPlayerVehicle(playerId)
         local plySpeed = math.floor(GetVehicleForwardSpeed(veh)+0.5)
         ExecuteWebJS(gui, 'NotifySpeed("'..plySpeed..'")')
     end
