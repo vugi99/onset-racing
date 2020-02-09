@@ -319,10 +319,15 @@ function spawnveh(ply,id,first)
 end
 
 AddEvent("OnPlayerSpawn", function(ply)
+   local found = false
    for i,v in ipairs(playerscheckpoints) do
       if v.ply == ply then
+         found=true
          spawnveh(ply,12,true)
       end
+   end
+   if not found then
+      speclogic(ply,playerscheckpoints[1].ply)
    end
 end)
 
@@ -431,7 +436,7 @@ function timercheck()
                            table.remove(plyvehs,i)
                         end
                      end
-                     speclogic(ply,playerscheckpoints[1].ply)
+                     speclogic(v.ply,playerscheckpoints[1].ply)
                   end
                   checktorestart()
                else

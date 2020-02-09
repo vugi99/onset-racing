@@ -58,7 +58,6 @@ AddRemoteEvent("hidecheckpoint",function(id)
     GetObjectActor(id):SetActorHiddenInGame(true)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
-    if checkpoints[curindex] then
         if curindex==#checkpoints then
             waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Finish Line")
         elseif curindex==#checkpoints+1 then
@@ -66,7 +65,6 @@ AddRemoteEvent("hidecheckpoint",function(id)
         elseif curindex<#checkpoints then
           waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
         end
-    end
 end)
 
 AddRemoteEvent("classement_update",function(placer,playercountr)
