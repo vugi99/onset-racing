@@ -114,15 +114,10 @@ AddEvent("OnPlayerSpawn", function(ply)
       end
    end
    if not found then
-      local ping = GetPlayerPing(ply)
-      if ping == 0 then
-          ping = 50
-      else
-         ping=ping*6
+      for i,v in ipairs(playerscheckpoints) do
+         speclogic(ply,playerscheckpoints[i].ply)
+         break
       end
-      Delay(ping,function()
-         speclogic(ply,playerscheckpoints[1].ply)
-      end)
    end
 end)
 
@@ -142,7 +137,10 @@ AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
                 ping=ping*6
                end
                Delay(ping,function()
-                  speclogic(ply,playerscheckpoints[1].ply)
+                  for i,v in ipairs(playerscheckpoints) do
+                     speclogic(ply,playerscheckpoints[i].ply)
+                     break
+                  end
                end)
             end
          end
@@ -298,12 +296,24 @@ end)
 
 AddRemoteEvent("changespec",function(ply,spectated)
    if #playerscheckpoints>0 then
+      local lookindex = false
     for i,v in ipairs(playerscheckpoints) do
+      if lookindex then
+        speclogic(ply,playerscheckpoints[i].ply)
+        break
+      end
        if v.ply==spectated then
           if i==#playerscheckpoints then
-             speclogic(ply,playerscheckpoints[1].ply)
+            for i,v in ipairs(playerscheckpoints) do
+               speclogic(ply,playerscheckpoints[i].ply)
+               break
+            end
           else
-            speclogic(ply,playerscheckpoints[i+1].ply)
+            if playerscheckpoints[i+1] then
+               speclogic(ply,playerscheckpoints[i+1].ply)
+            else
+               lookindex=true
+            end
           end
        end
     end
