@@ -16,6 +16,7 @@
         ],
         "files": [
                 "gui/build/index.html",
+                "gui/build/gauge.png",
                 "gui/build/fonts/fr.ttf",
                 "gui/build/fonts/sr.ttf",
                 "gui/build/fonts/sr_i.ttf",

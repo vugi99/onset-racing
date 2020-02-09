@@ -1,13 +1,26 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { IAppState } from "../redux/reducer";
+import "./speedometer.css"
 
 export const Speedometer = () => {
 
     const playerSpeed = useSelector((appState: IAppState) => appState.speed);
+    const rotationFromSpeed = playerSpeed <= 20
+        ? -140
+        : -140 + ((playerSpeed - 20));
 
     console.log("Player Speed : ", playerSpeed);
 
-    return null;
+    return (
+        <div className="gauge">
+            500 KM/h
+            <div className="needle" style={{transform: `rotate(${rotationFromSpeed}deg)`}}>
+            </div>
+            <div className="textSpeed">
+                {playerSpeed}
+            </div>
+        </div>
+    );
 
 }

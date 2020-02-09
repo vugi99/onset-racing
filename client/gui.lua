@@ -10,6 +10,7 @@ end)
 AddEvent("OnWebLoadComplete", function(web)
     if web == gui then
         -- Cal remote event for server data hydration
+        AddPlayerChat("TEST")
     end
 end)
 

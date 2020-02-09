@@ -1,0 +1,28 @@
+.needle {
+    position: absolute;
+    left:   125px;
+    top:     0px;
+
+    width:   1px;
+    height: 125px;
+    
+    border: 1px solid red;
+    box-sizing: border-box;
+    
+    transform-origin: center bottom;
+}
+
+.gauge {
+    background-image: url("http://asset/racing/gui/build/gauge.png");
+    height: 250px;
+    width: 250px;
+    background-size: 250px;
+    position: fixed;
+    bottom: 0;
+}
+
+.textSpeed {
+    text-align: center;
+    font-size: 24px;
+    margin-top: 150px;
+}
