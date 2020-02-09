@@ -120,8 +120,18 @@ end)
 
 AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
    if GetPlayerPropertyValue(ply,"leaving")==nil then
-    spawnveh(ply,12)
-    SetPlayerPropertyValue(ply,"leaving",nil,false)
+      if GetPlayerPropertyValue(ply,"leavingtospec")==nil then
+          spawnveh(ply,12)
+      else
+         for i,v in ipairs(plyvehs) do
+            if v.ply == ply then
+               DestroyVehicle(v.vid)
+               table.remove(plyvehs,i)
+               speclogic(ply,playerscheckpoints[1].ply)
+            end
+         end
+         SetPlayerPropertyValue(ply,"leavingtospec",nil,false)
+      end
    end
 end)
 
@@ -219,15 +229,8 @@ function timercheck()
                   place = #finishclassement
                   table.remove(playerscheckpoints,i)
                   if #playerscheckpoints>0 then
-                     for i,vp in ipairs(plyvehs) do
-                        if vp.ply == ply then
-                           SetPlayerPropertyValue(vp.ply,"leaving",true,false)
-                           RemovePlayerFromVehicle(vp.ply)
-                           DestroyVehicle(vp.vid)
-                           table.remove(plyvehs,i)
-                        end
-                     end
-                     speclogic(v.ply,playerscheckpoints[1].ply)
+                           SetPlayerPropertyValue(v.ply,"leavingtospec",true,false)
+                           RemovePlayerFromVehicle(v.ply)
                   end
                   checktorestart()
                else
