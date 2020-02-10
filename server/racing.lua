@@ -308,12 +308,14 @@ end)
 AddRemoteEvent("changespec",function(ply,spectated)
    if #playerscheckpoints>0 then
       local lookindex = false
+      local found = false
     for i,v in ipairs(playerscheckpoints) do
       if lookindex then
         speclogic(ply,v.ply)
         break
       end
        if v.ply==spectated then
+         found = true
           if i==#playerscheckpoints then
             for i,v in ipairs(playerscheckpoints) do
                speclogic(ply,playerscheckpoints[i].ply)
@@ -324,6 +326,13 @@ AddRemoteEvent("changespec",function(ply,spectated)
           end
        end
     end
+    if not found then
+      for i,v in ipairs(playerscheckpoints) do
+         speclogic(ply,playerscheckpoints[i].ply)
+         break
+      end
+    end
+    
    end
 end)
 
