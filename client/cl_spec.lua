@@ -5,16 +5,28 @@ local specply = nil
 local checktimer = nil
 local needtorefirst = false
 
+local comptcheck = 0
+
 function checkuntilvalid()
    for i,ply in pairs(GetStreamedPlayers()) do
       if ply==specply then
          spec=true
          DestroyTimer(checktimer)
+         checktimer=nil
          if IsFirstPersonCamera() then
             needtorefirst=true
             EnableFirstPersonCamera(false)
          end
       end
+   end
+   if not spec then
+       if comptcheck<=300 then
+          comptcheck=comptcheck+1
+       else
+        DestroyTimer(checktimer)
+        checktimer=nil
+        CallRemoteEvent("changespec",specply)
+       end
    end
 end
 
@@ -26,6 +38,11 @@ AddRemoteEvent("SpecRemoteEvent",function(bool,plyid,x,y,z)
         specply=plyid
         actor = GetPlayerActor(GetPlayerId())
         actor:SetActorLocation(FVector( x,y,0))
+        comptcheck=0
+        if checktimer then
+            DestroyTimer(checktimer)
+            checktimer=nil
+        end
         checktimer = CreateTimer(checkuntilvalid,10)
     end
 end)
@@ -33,6 +50,10 @@ end)
 function stopspec(needtoreask)
     if needtorefirst then
         EnableFirstPersonCamera(true)
+    end
+    if checktimer then
+        DestroyTimer(checktimer)
+        checktimer=nil
     end
     if spec then
         if needtoreask then

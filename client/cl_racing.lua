@@ -30,6 +30,7 @@ AddEvent("OnRenderHUD",function()
         local ScreenX, ScreenY = GetScreenSize()
         DrawText(ScreenX-75,ScreenY-25,"Speed : " .. math.floor(GetVehicleForwardSpeed(veh)+0.5))
     end
+    DrawText(0,375,"Ping " .. GetPing())
     if GetPlayerVehicle(GetPlayerId()) ~= 0 then
         DrawText(0,400,"R = return your car")
     end
