@@ -84,6 +84,7 @@ AddEvent("OnGameTick",function(ds)
             AddPlayerChat("Player invalid")
             stopspec(true)
         end
+    else
         stopspec(false)
     end
     end
