@@ -88,6 +88,7 @@ end)
 function createstart(modelpath)
    if curstartlinemodel ~= nil then
        curstartlinemodel:Destroy()
+       curstartlinemodel = nil
    end
    curstartlinemodel = GetWorld():SpawnActor(AStaticMeshActor.Class(), FVector(checkpoints[1][1], checkpoints[1][2], checkpoints[1][3]), FRotator(0, checkpoints[1][4], 0))
    curstartlinemodel:GetStaticMeshComponent():SetMobility(EComponentMobility.Movable)
