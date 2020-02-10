@@ -1,3 +1,11 @@
+
+LoadPak("finishlinerouge", "/finishlinerouge/", "../../../OnsetModding/Plugins/finishlinerouge/Content")
+LoadPak("finishlinevert", "/finishlinevert/", "../../../OnsetModding/Plugins/finishlinevert/Content")
+
+local curstartlinemodel = nil
+
+
+
 local checkpoints = nil
 
 local compteur_state = nil
@@ -60,15 +68,15 @@ AddRemoteEvent("hidecheckpoint",function(id)
     GetObjectActor(id):SetActorHiddenInGame(true)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
-        if curindex==#checkpoints then
+        if curindex+1==#checkpoints then
             CreateSound("sounds/checkpoint.mp3")
-            waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Finish Line")
-        elseif curindex==#checkpoints+1 then
+            waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
+        elseif curindex+1==#checkpoints+1 then
             compteur_state=false
             CreateSound("sounds/race_end.mp3")
-        elseif curindex<#checkpoints then
+        elseif curindex+1<#checkpoints then
             CreateSound("sounds/checkpoint.mp3")
-          waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+          waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
         end
 end)
 
@@ -76,6 +84,18 @@ AddRemoteEvent("classement_update",function(placer,playercountr)
     place=placer
     plycount=playercountr
 end)
+
+function createstart(modelpath)
+   if curstartlinemodel ~= nil then
+       curstartlinemodel:Destroy()
+   end
+   curstartlinemodel = GetWorld():SpawnActor(AStaticMeshActor.Class(), FVector(checkpoints[1][1], checkpoints[1][2], checkpoints[1][3]), FRotator(0, checkpoints[1][4], 0))
+   curstartlinemodel:GetStaticMeshComponent():SetMobility(EComponentMobility.Movable)
+   curstartlinemodel:GetStaticMeshComponent():SetStaticMesh(UStaticMesh.LoadFromAsset(modelpath))
+   curstartlinemodel:SetActorScale3D(FVector(1, 1, 1))
+   curstartlinemodel:GetStaticMeshComponent():SetMobility(EComponentMobility.Static)
+   curstartlinemodel:GetStaticMeshComponent():SetCollisionEnabled(ECollisionEnabled.NoCollision)
+end
 
 function decompte_update()
    if decompte_s-1 > 0 then
@@ -99,6 +119,7 @@ function decompte_update()
     decompte=nil
     compteur_time=0
     compteur_state=true
+    createstart("/finishlinevert/finishlinesignvert")
    end
 end
 
@@ -108,11 +129,12 @@ AddRemoteEvent("checkpointstbl",function(tbl,temps)
     decompte_s = temps
     SetIgnoreMoveInput(true)
     decompte = CreateTimer(decompte_update,temps*1000/temps)
+    createstart("/finishlinerouge/finishlinesignrouge")
     if waypoint==nil then
-       waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
+       waypoint=CreateWaypoint(tbl[curindex+1][1], tbl[curindex+1][2], tbl[curindex+1][3], "Checkpoint " .. curindex)
     else
         DestroyWaypoint(waypoint)
-        waypoint=CreateWaypoint(tbl[curindex][1], tbl[curindex][2], tbl[curindex][3], "Checkpoint " .. curindex)
+        waypoint=CreateWaypoint(tbl[curindex+1][1], tbl[curindex+1][2], tbl[curindex+1][3], "Checkpoint " .. curindex)
     end
 end)
 
@@ -155,10 +177,10 @@ end)
 AddRemoteEvent("reset_checkpoints",function()
     curindex = 1
     if waypoint==nil then
-        waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+        waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
      else
          DestroyWaypoint(waypoint)
-         waypoint=CreateWaypoint(checkpoints[curindex][1], checkpoints[curindex][2], checkpoints[curindex][3], "Checkpoint " .. curindex)
+         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
      end
 end)
 

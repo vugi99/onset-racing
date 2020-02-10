@@ -22,12 +22,14 @@ function createcheckpoints(mapname)
    end
    checkpoints = {}
    for i,v in ipairs(races[mapname]) do
-         if i == #races[mapname] then
-            local obj = CreateObject(52, v[1], v[2], v[3] , 0, v[4], 0, 1, 1, 1)
+         if i+1 == #races[mapname] then
+            local obj = CreateObject(52, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, races[mapname][i+1][4], 0, 1, 1, 1)
           table.insert(checkpoints,obj)
          else
-         local obj = CreateObject(336, v[1], v[2], v[3] , 0, 0, 0, 10, 10, 10)
+            if races[mapname][i+1] then
+         local obj = CreateObject(336, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, 0, 0, 10, 10, 10)
           table.insert(checkpoints,obj)
+            end
          end
    end
 end
@@ -109,7 +111,7 @@ AddEvent("OnPlayerSpawn", function(ply)
       if v.ply == ply then
          found=true
          spawnveh(ply,12,true)
-         v.number = 0
+         v.number = 1
          CallRemoteEvent(ply,"reset_checkpoints")
       end
    end
@@ -230,14 +232,14 @@ function timercheck()
          local veh = GetPlayerVehicle(v.ply)
          if IsValidVehicle(veh) then
         for i2,vc in ipairs(checkpoints) do
-           if i2==v.number+1 then
+           if i2+1==v.number+1 then
             local x,y,z = GetVehicleLocation(veh)
             if z>0 then
-            if GetDistance2D(x, y, races[racesnumbers[currace]][i2][1], races[racesnumbers[currace]][i2][2])<750 then
-               v.number=i2
+            if GetDistance2D(x, y, races[racesnumbers[currace]][i2+1][1], races[racesnumbers[currace]][i2+1][2])<750 then
+               v.number=i2+1
                CallRemoteEvent(v.ply,"hidecheckpoint",vc)
                local place = 0
-
+ 
                if i2 == #checkpoints then
                   table.insert(finishclassement,v.ply)
                   place = #finishclassement
@@ -262,7 +264,7 @@ function timercheck()
             end
          else
             AddPlayerChat(v.ply,"Reseting your car")
-            v.number = 0
+            v.number = 1
             SetPlayerHealth(v.ply, 0)
             CallRemoteEvent(v.ply,"reset_checkpoints")
          end
