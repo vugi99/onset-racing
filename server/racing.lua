@@ -23,7 +23,7 @@ function createcheckpoints(mapname)
    checkpoints = {}
    for i,v in ipairs(races[mapname]) do
          if i == #races[mapname] then
-            local obj = CreateObject(646, v[1], v[2], v[3]+400 , 0, v[4], 0, 5, 5, 5)
+            local obj = CreateObject(52, v[1], v[2], v[3] , 0, v[4], 0, 1, 1, 1)
           table.insert(checkpoints,obj)
          else
          local obj = CreateObject(336, v[1], v[2], v[3] , 0, 0, 0, 10, 10, 10)
@@ -316,4 +316,11 @@ AddRemoteEvent("changespec",function(ply,spectated)
     end
    end
 end)
+
+function speclogic(cmdply,ply)
+   print(cmdply,ply)
+       AddPlayerChat(cmdply,"You are spectating " .. GetPlayerName(ply))
+       local x, y, z = GetPlayerLocation(ply)
+       CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
+end
 

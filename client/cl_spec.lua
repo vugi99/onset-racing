@@ -43,13 +43,12 @@ function stopspec(needtoreask)
     specply=nil
     SetCameraLocation(0,0,0,false)
     SetCameraRotation(0,0,0,false)
-    CallRemoteEvent("NoLongerSpectating")
     end
 end
 
 AddEvent("OnGameTick",function(ds)
-    AddPlayerChat("playertospec " .. tostring(specply) .. " specstate " .. tostring(spec))
     if spec then
+       if not IsPlayerInVehicle() then
         if IsValidPlayer(specply) then
             local x, y, z = GetPlayerLocation(specply)
             local x2, y2, z2 = GetPlayerLocation(GetPlayerId())
@@ -85,6 +84,8 @@ AddEvent("OnGameTick",function(ds)
             AddPlayerChat("Player invalid")
             stopspec(true)
         end
+        stopspec(false)
+    end
     end
 end)
 

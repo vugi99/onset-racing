@@ -4,7 +4,6 @@
         "onset_build": "1.0.3",
         "server_scripts": [
                 "server/racing.lua",
-                "server/spec.lua",
                 "server/clothes.lua",
                 "server/races.lua"
         ],
@@ -12,7 +11,8 @@
                 "client/cl_racing.lua",
                 "client/cl_spec.lua",
                 "client/cl_clothes.lua",
-                "client/gui.lua"
+                "client/gui.lua",
+                "models/paks.lua"
         ],
         "files": [
                 "gui/build/index.html",
@@ -28,6 +28,9 @@
                 "gui/build/static/js/runtime-main.js",
                 "sounds/race_end.mp3",
                 "sounds/race_start.mp3",
-                "sounds/checkpoint.mp3"
+                "sounds/checkpoint.mp3",
+                "models/finishline.pak",
+                "models/finishlinerouge.pak",
+                "models/finishlinevert.pak"
         ]
 }
