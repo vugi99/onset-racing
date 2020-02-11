@@ -23,6 +23,10 @@ local curindex = 1
 
 local time_until_restart = nil
 
+local afk_timer = nil
+local afk_posx = nil
+local afk_posy = nil
+
 AddEvent("OnRenderHUD",function()
     local veh = GetPlayerVehicle(GetPlayerId())
     if veh~=0 then
@@ -76,6 +80,10 @@ AddRemoteEvent("hidecheckpoint",function(id)
         elseif curindex+1==#checkpoints+1 then
             compteur_state=false
             CreateSound("sounds/race_end.mp3")
+            if afk_timer then
+              DestroyTimer(afk_timer)
+              afk_timer=nil
+            end
         elseif curindex+1<#checkpoints then
             CreateSound("sounds/checkpoint.mp3")
           waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
@@ -133,6 +141,10 @@ AddRemoteEvent("checkpointstbl",function(tbl,temps)
     SetIgnoreMoveInput(true)
     decompte = CreateTimer(decompte_update,temps*1000/temps)
     createstart("/finishlinerouge/finishlinesignrouge")
+    if afk_timer then
+        DestroyTimer(afk_timer)
+        afk_timer=nil
+      end
     if waypoint==nil then
        waypoint=CreateWaypoint(tbl[curindex+1][1], tbl[curindex+1][2], tbl[curindex+1][3], "Checkpoint " .. curindex)
     else
@@ -190,4 +202,20 @@ AddRemoteEvent("reset_checkpoints",function()
      end
 end)
 
+function check_afk()
+   local x,y,z = GetPlayerLocation(GetPlayerId())
+   if (x~=afk_posx or y ~= afk_posy) then
+      afk_posx=x
+      afk_posy=y
+   else
+    CallRemoteEvent("imafk")
+   end
+end
+
+AddRemoteEvent("startlookingforafk",function()
+    local x,y,z = GetPlayerLocation(GetPlayerId())
+    afk_posx=x
+    afk_posy=y
+    local afk_timer = CreateTimer(check_afk,120000)
+end)
 

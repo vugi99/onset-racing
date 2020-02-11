@@ -32,8 +32,7 @@ end
 
 AddRemoteEvent("SpecRemoteEvent",function(bool,plyid,x,y,z)
     if bool == false then
-       spec=false
-       specply=nil
+       stopspec(false)
     else
         specply=plyid
         actor = GetPlayerActor(GetPlayerId())
@@ -111,10 +110,6 @@ AddEvent("OnGameTick",function(ds)
     end
 end)
 
-
-AddRemoteEvent("StopSpec",function()
-    stopspec(false)
-end)
 AddEvent("OnKeyPress",function(key)
     if (spec and key=="E") then
         CallRemoteEvent("changespec",specply)

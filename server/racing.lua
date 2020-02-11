@@ -45,7 +45,7 @@ function changerace()
       CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
       SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
       SetPlayerHealth(v, 0)
-      CallRemoteEvent(v,"StopSpec")
+      CallRemoteEvent(v,"SpecRemoteEvent",false)
       CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
    end
 end
@@ -122,6 +122,9 @@ AddEvent("OnPlayerSpawn", function(ply)
              ping = 50
          else
             ping=ping*6
+         end
+         for i,v in ipairs(playerscheckpoints) do
+            CallRemoteEvent(v.ply,"startlookingforafk")
          end
          Delay(ping,function()
             speclogic(ply,playerscheckpoints[i].ply)
@@ -371,4 +374,8 @@ AddCommand("showspawns",function(ply)
         end
     end
    end
+end)
+
+AddRemoteEvent("imafk",function(ply)
+    KickPlayer(ply,"Afk")
 end)
