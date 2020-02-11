@@ -285,6 +285,9 @@ end
 
 AddEvent("OnPackageStart",function()
    CreateTimer(timercheck, 35)
+   if dev then
+      print("DEV MODE ACTIVATED FOR " .. GetPackageName())
+   end
 end)
 
 AddRemoteEvent("returncar_racing",function(ply)
@@ -358,4 +361,14 @@ AddRemoteEvent("last_checkpoint",function(ply)
             end
          end
      end
+end)
+
+AddCommand("showspawns",function(ply)
+   if dev then
+    for i,v in ipairs(spawns[racesnumbers[currace]]) do
+        if i > 1 then
+         CreateObject(1363, v[1], v[2], v[3] , 0, spawns[racesnumbers[currace]][1], 0, 1, 1, 1)
+        end
+    end
+   end
 end)
