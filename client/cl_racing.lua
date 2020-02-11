@@ -33,6 +33,7 @@ AddEvent("OnRenderHUD",function()
     DrawText(0,375,"Ping " .. GetPing())
     if GetPlayerVehicle(GetPlayerId()) ~= 0 then
         DrawText(0,400,"R = return your car")
+        DrawText(0,525,"C = last checkpoint")
     end
     if (compteur_time~=nil ) then
         DrawText(0,425,"Time : " .. compteur_time .. " ms")
@@ -145,6 +146,9 @@ AddEvent("OnKeyPress",function(key)
     if veh~=0 then
          if key == "R" then
             CallRemoteEvent("returncar_racing")
+         end
+         if key == "C" then
+            CallRemoteEvent("last_checkpoint")
          end
     end
 end)

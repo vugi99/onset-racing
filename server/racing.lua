@@ -343,3 +343,19 @@ function speclogic(cmdply,ply)
        CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
 end
 
+AddRemoteEvent("last_checkpoint",function(ply)
+     for i,v in ipairs(playerscheckpoints) do
+         if v.ply == ply then
+            if v.number == 1 then
+               SetPlayerHealth(ply,0)
+            else 
+               local veh = GetPlayerVehicle(ply)
+               local rx,ry,rz = GetVehicleRotation(veh)
+               SetVehicleRotation(veh, 0,ry,0)
+               SetVehicleLinearVelocity(veh, 0, 0, 0 ,true)
+               SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
+               SetVehicleLocation(veh,races[racesnumbers[currace]][v.number][1], races[racesnumbers[currace]][v.number][2], races[racesnumbers[currace]][v.number][3] + 200)
+            end
+         end
+     end
+end)
