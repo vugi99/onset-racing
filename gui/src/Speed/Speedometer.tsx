@@ -8,13 +8,12 @@ export const Speedometer = () => {
     const playerSpeed = useSelector((appState: IAppState) => appState.speed);
     const rotationFromSpeed = playerSpeed <= 20
         ? -140
-        : -140 + ((playerSpeed - 20));
+        : -140 + (playerSpeed - 20);
 
     console.log("Player Speed : ", playerSpeed);
 
     return (
         <div className="gauge">
-            500 KM/h
             <div className="needle" style={{transform: `rotate(${rotationFromSpeed}deg)`}}>
             </div>
             <div className="textSpeed">

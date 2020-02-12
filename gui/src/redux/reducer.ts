@@ -11,6 +11,7 @@ export const notifySpeed = createAction("NOTIFY_SPEED");
 // I only have one of course because this is only counting
 export interface IAppState {
     speed: number;
+    decompte?: number;
 }
 
 const initialState: IAppState = {
