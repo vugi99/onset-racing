@@ -75,7 +75,8 @@ AddRemoteEvent("hidecheckpoint",function(id)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
         if curindex+1==#checkpoints then
-            CreateSound("sounds/checkpoint.mp3")
+            local csound = CreateSound("sounds/checkpoint.mp3")
+            SetSoundVolume(csound, 0.6)
             waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
         elseif curindex+1==#checkpoints+1 then
             compteur_state=false
@@ -85,7 +86,8 @@ AddRemoteEvent("hidecheckpoint",function(id)
               afk_timer=nil
             end
         elseif curindex+1<#checkpoints then
-            CreateSound("sounds/checkpoint.mp3")
+            local csound = CreateSound("sounds/checkpoint.mp3")
+            SetSoundVolume(csound, 0.6)
           waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
         end
 end)
