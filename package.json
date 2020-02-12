@@ -20,6 +20,7 @@
                 "gui/build/gauge.png",
                 "gui/build/fonts/fr.ttf",
                 "gui/build/fonts/sr.ttf",
+                "gui/build/fonts/lcd.TTF",
                 "gui/build/fonts/sr_i.ttf",
                 "gui/build/fonts/sr_n.ttf",
                 "gui/build/fonts/sr_ni.ttf",

@@ -9,8 +9,6 @@ end)
 
 AddEvent("OnWebLoadComplete", function(web)
     if web == gui then
-        -- Cal remote event for server data hydration
-        AddPlayerChat("TEST")
     end
 end)
 
@@ -23,4 +21,8 @@ CreateTimer(function()
         ExecuteWebJS(gui, 'NotifySpeed("'..plySpeed..'")')
     end
 end, 20)
+
+AddEvent("GUI:NotifyCountValue", function(counterValue)
+    ExecuteWebJS(gui, "NotifyDecompte('"..counterValue.."')")
+end)
 

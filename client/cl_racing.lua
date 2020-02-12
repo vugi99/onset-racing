@@ -121,6 +121,7 @@ function decompte_update()
             local sound = CreateSound("sounds/race_start.mp3")
             SetSoundVolume(sound, 1)
         end
+        CallEvent("GUI:NotifyCountValue", decompte_s)
    else
     local sound = CreateSound("sounds/race_start.mp3")
     SetSoundVolume(sound, 1.5)
@@ -131,6 +132,7 @@ function decompte_update()
     compteur_time=0
     compteur_state=true
     createstart("/finishlinevert/finishlinesignvert")
+    CallEvent("GUI:NotifyCountValue", -1)
    end
 end
 

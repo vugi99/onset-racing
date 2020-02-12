@@ -15,6 +15,7 @@ export const Speedometer = () => {
     return (
         <div className="gauge">
             <div className="needle" style={{transform: `rotate(${rotationFromSpeed}deg)`}}>
+                <div className="needleBody"></div>
             </div>
             <div className="textSpeed">
                 {playerSpeed}
