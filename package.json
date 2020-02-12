@@ -12,7 +12,8 @@
                 "client/cl_spec.lua",
                 "client/cl_clothes.lua",
                 "client/gui.lua",
-                "models/paks.lua"
+                "models/paks.lua",
+                "client/radio.lua"
         ],
         "files": [
                 "gui/build/index.html",
