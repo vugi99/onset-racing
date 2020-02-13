@@ -71,10 +71,10 @@ AddEvent("OnPackageStart",function()
 end)
 
 AddRemoteEvent("hidecheckpoint",function(id)
-    GetObjectActor(id):SetActorHiddenInGame(true)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
         if curindex+1==#checkpoints then
+            GetObjectActor(id):SetActorHiddenInGame(true)
             local csound = CreateSound("sounds/checkpoint.mp3")
             SetSoundVolume(csound, 0.6)
             waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
@@ -86,6 +86,7 @@ AddRemoteEvent("hidecheckpoint",function(id)
               afk_timer=nil
             end
         elseif curindex+1<#checkpoints then
+            GetObjectActor(id):SetActorHiddenInGame(true)
             local csound = CreateSound("sounds/checkpoint.mp3")
             SetSoundVolume(csound, 0.6)
           waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)

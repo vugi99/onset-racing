@@ -112,7 +112,7 @@ end)
 
 AddEvent("OnKeyPress",function(key)
     if (spec and key=="E") then
-        CallRemoteEvent("changespec",specply)
+        stopspec(true)
     end
 end)
 
