@@ -4,7 +4,7 @@ LoadPak("finishlinevert", "/finishlinevert/", "../../../OnsetModding/Plugins/fin
 
 local curstartlinemodel = nil
 
-
+local checkpoints_hide = {}
 
 local checkpoints = nil
 
@@ -53,11 +53,14 @@ AddEvent("OnRenderHUD",function()
     end
 end)
 
-function disablecollisions()
-   for i,v in ipairs(GetStreamedObjects(false)) do
-    GetObjectActor(v):SetActorEnableCollision(false)
-   end
-end
+AddEvent("OnObjectStreamIn",function(id) 
+    GetObjectActor(id):SetActorEnableCollision(false)
+    for i,v in ipairs(checkpoints_hide) do
+       if v == id then
+          GetObjectActor(id):SetActorHiddenInGame(true)
+       end
+    end
+end)
 
 function update_compteur()
    if (compteur_time and compteur_state) then
@@ -66,7 +69,6 @@ function update_compteur()
 end
 
 AddEvent("OnPackageStart",function()
-    CreateTimer(disablecollisions, 250)
     CreateTimer(update_compteur, 100)
 end)
 
@@ -75,6 +77,7 @@ AddRemoteEvent("hidecheckpoint",function(id)
     DestroyWaypoint(waypoint)
         if curindex+1==#checkpoints then
             GetObjectActor(id):SetActorHiddenInGame(true)
+            table.insert(checkpoints_hide,id)
             local csound = CreateSound("sounds/checkpoint.mp3")
             SetSoundVolume(csound, 0.6)
             waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
@@ -87,6 +90,7 @@ AddRemoteEvent("hidecheckpoint",function(id)
             end
         elseif curindex+1<#checkpoints then
             GetObjectActor(id):SetActorHiddenInGame(true)
+            table.insert(checkpoints_hide,id)
             local csound = CreateSound("sounds/checkpoint.mp3")
             SetSoundVolume(csound, 0.6)
           waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
@@ -144,6 +148,7 @@ AddRemoteEvent("checkpointstbl",function(tbl,temps)
     curindex = 1
     decompte_s = temps
     SetIgnoreMoveInput(true)
+    checkpoints_hide = {}
     decompte = CreateTimer(decompte_update,temps*1000/temps)
     createstart("/finishlinerouge/finishlinesignrouge")
     if afk_timer then
