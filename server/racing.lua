@@ -2,6 +2,9 @@ local nitro = true
 local dev = true
 local time_after_finish_ms = 60000
 local time_bef_start_s = 6
+local admins = {
+   "76561197972837186"
+}
 
 local plyvehs = {}
 local checkpoints = nil
@@ -315,14 +318,16 @@ AddRemoteEvent("changespec",function(ply,spectated)
    if #playerscheckpoints>0 then
       local lookindex = false
       local found = false
+      local compt = 0
     for i,v in ipairs(playerscheckpoints) do
       if lookindex then
         speclogic(ply,v.ply)
         break
       end
+      compt=compt+1
        if v.ply==spectated then
          found = true
-          if i==#playerscheckpoints then
+          if compt==#playerscheckpoints then
             for i,v in ipairs(playerscheckpoints) do
                speclogic(ply,playerscheckpoints[i].ply)
                break
@@ -378,4 +383,36 @@ end)
 
 AddRemoteEvent("imafk",function(ply)
     KickPlayer(ply,"Afk")
+end)
+
+AddCommand("raceeditor",function(ply,raceid)
+   local isadmin = false
+   for i,v in ipairs(admins) do
+      if v==tostring(GetPlayerSteamId(ply)) then
+         isadmin = true
+      end
+   end
+   if isadmin then
+   if raceid then
+   if GetPlayerCount()==1 then
+      if (racesnumbers[tonumber(raceid)] or raceid=="new") then
+         CallRemoteEvent(ply,"editor_load")
+         CallRemoteEvent(ply,"editorenable")
+         for i,v in ipairs(checkpoints) do
+            DestroyObject(v)
+          end
+          checkpoints=nil
+    playerscheckpoints={}
+    starteditor(ply,raceid)
+    AddPlayerChat(ply,"Editor activated , do /saverace to save the race (it will stop the server)")
+    else
+      AddPlayerChat(ply,"Invalid raceid")
+    end
+   else
+      AddPlayerChat(ply,"Only 1 player need to be on the server")
+   end
+else
+   AddPlayerChat(ply,"/raceeditor <raceid (put 'new' to make a new race)>")
+end
+end
 end)

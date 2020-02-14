@@ -229,3 +229,35 @@ AddRemoteEvent("startlookingforafk",function()
     local afk_timer = CreateTimer(check_afk,120000)
 end)
 
+AddRemoteEvent("editor_load",function()
+    if waypoint~=nil then
+        DestroyWaypoint(waypoint)
+        waypoint=nil
+    end
+    if curstartlinemodel ~= nil then
+        curstartlinemodel:Destroy()
+        curstartlinemodel = nil
+    end
+    checkpoints_hide={}
+    compteur_state = nil
+    compteur_time = nil
+    place = nil
+    plycount = nil
+
+    decompte = nil
+    decompte_s = nil
+
+    curindex = 1
+
+    time_until_restart = nil
+    if showed_timer then
+        DestroyTimer(showed_timer)
+        showed_timer=nil
+     end
+     if afk_timer then
+        DestroyTimer(afk_timer)
+        afk_timer=nil
+        afk_posx=nil
+        afk_posy=nil
+      end
+end)

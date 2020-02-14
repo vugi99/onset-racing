@@ -5,7 +5,8 @@
         "server_scripts": [
                 "server/racing.lua",
                 "server/clothes.lua",
-                "server/races.lua"
+                "server/races.lua",
+                "server/raceeditor.lua"
         ],
         "client_scripts": [
                 "client/cl_racing.lua",
@@ -13,7 +14,8 @@
                 "client/cl_clothes.lua",
                 "client/gui.lua",
                 "models/paks.lua",
-                "client/radio.lua"
+                "client/radio.lua",
+                "client/cl_raceeditor.lua"
         ],
         "files": [
                 "gui/build/index.html",
