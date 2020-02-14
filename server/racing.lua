@@ -39,15 +39,17 @@ function changerace()
    finishclassement = {}
    createcheckpoints(racesnumbers[currace])
    for i,v in ipairs(GetAllPlayers()) do
-      local tbl = {}
-      tbl.ply = v
-      tbl.number = 0
-      table.insert(playerscheckpoints,tbl)
-      CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
-      SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
-      SetPlayerHealth(v, 0)
-      CallRemoteEvent(v,"SpecRemoteEvent",false)
-      CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
+      if IsValidPlayer(v) then
+         local tbl = {}
+         tbl.ply = v
+         tbl.number = 0
+         table.insert(playerscheckpoints,tbl)
+         CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
+         SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
+         SetPlayerHealth(v, 0)
+         CallRemoteEvent(v,"SpecRemoteEvent",false)
+         CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
+      end
    end
 end
 
