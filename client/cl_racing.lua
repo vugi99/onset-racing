@@ -75,31 +75,37 @@ end)
 AddRemoteEvent("hidecheckpoint",function(id)
     curindex=curindex+1
     DestroyWaypoint(waypoint)
-        if curindex+1==#checkpoints then
-            GetObjectActor(id):SetActorHiddenInGame(true)
-            table.insert(checkpoints_hide,id)
-            local csound = CreateSound("sounds/checkpoint.mp3")
-            SetSoundVolume(csound, 0.6)
-            waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
-        elseif curindex+1==#checkpoints+1 then
-            compteur_state=false
-            CreateSound("sounds/race_end.mp3")
-            if afk_timer then
-              DestroyTimer(afk_timer)
-              afk_timer=nil
-            end
-        elseif curindex+1<#checkpoints then
-            GetObjectActor(id):SetActorHiddenInGame(true)
-            table.insert(checkpoints_hide,id)
-            local csound = CreateSound("sounds/checkpoint.mp3")
-            SetSoundVolume(csound, 0.6)
-          waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
+
+    if curindex+1==#checkpoints then
+        GetObjectActor(id):SetActorHiddenInGame(true)
+        table.insert(checkpoints_hide,id)
+        local csound = CreateSound("sounds/checkpoint.mp3")
+        SetSoundVolume(csound, 0.6)
+        waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
+        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time)
+    elseif curindex+1==#checkpoints+1 then
+        compteur_state=false
+        CreateSound("sounds/race_end.mp3")
+        if afk_timer then
+            DestroyTimer(afk_timer)
+            afk_timer=nil
         end
+        CallEvent("GUI:PlayerFinished", compteur_time)
+    elseif curindex+1<#checkpoints then
+        GetObjectActor(id):SetActorHiddenInGame(true)
+        table.insert(checkpoints_hide,id)
+        local csound = CreateSound("sounds/checkpoint.mp3")
+        SetSoundVolume(csound, 0.6)
+        waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
+        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time)
+    end
 end)
 
 AddRemoteEvent("classement_update",function(placer,playercountr)
     place=placer
     plycount=playercountr
+
+    CallEvent("GUI:UpdatePlayerPosition", placer, playercountr)
 end)
 
 function createstart(modelpath)
@@ -228,4 +234,10 @@ AddRemoteEvent("startlookingforafk",function()
     afk_posy=y
     local afk_timer = CreateTimer(check_afk,120000)
 end)
+
+CreateTimer(function()
+    if compteur_time then
+        CallEvent("GUI:SetRaceTime", compteur_time)
+    end
+end, 100)
 

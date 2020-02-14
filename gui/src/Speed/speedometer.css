@@ -1,8 +1,3 @@
-@font-face {
-    font-family: lcd;
-    src: url(http://asset/racing/gui/build/fonts/lcd.TTF);
-}
-
 .needle {
     position: absolute;
     left:   125px;
