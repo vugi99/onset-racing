@@ -210,6 +210,7 @@ end)
 
 AddRemoteEvent("reset_checkpoints",function()
     curindex = 1
+    checkpoints_hide = {}
     if waypoint==nil then
         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
      else
