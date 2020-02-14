@@ -2,6 +2,7 @@ local nitro = true
 local dev = true
 local time_after_finish_ms = 60000
 local time_bef_start_s = 6
+local car = 12
 
 local plyvehs = {}
 local checkpoints = nil
@@ -53,11 +54,7 @@ end
 
 AddEvent("OnPlayerJoin", function(ply)
    if GetPlayerCount()<=16 then
-   if not checkpoints then
-      SetPlayerSpawnLocation(ply, spawns[racesnumbers[currace]][2][1], spawns[racesnumbers[currace]][2][2], spawns[racesnumbers[currace]][2][3], spawns[racesnumbers[currace]][1])
-   else
-      SetPlayerSpawnLocation(ply, 125773.000000, 80246.000000, 1645.000000, 90.0)
-   end
+      SetPlayerSpawnLocation(ply, spawns[racesnumbers[currace]][2][1], spawns[racesnumbers[currace]][2][2], 0, spawns[racesnumbers[currace]][1])
    SetPlayerRespawnTime(ply, 500)
    if not checkpoints then
       changerace()
@@ -110,7 +107,7 @@ AddEvent("OnPlayerSpawn", function(ply)
    for i,v in ipairs(playerscheckpoints) do
       if v.ply == ply then
          found=true
-         spawnveh(ply,12,true)
+         spawnveh(ply,car,true)
          v.number = 1
          CallRemoteEvent(ply,"reset_checkpoints")
       end
@@ -137,7 +134,7 @@ end)
 AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
    if GetPlayerPropertyValue(ply,"leaving")==nil then
       if GetPlayerPropertyValue(ply,"leavingtospec")==nil then
-          spawnveh(ply,12)
+          spawnveh(ply,car)
       else
          for i,v in ipairs(plyvehs) do
             if v.ply == ply then
