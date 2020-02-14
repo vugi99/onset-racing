@@ -1,3 +1,8 @@
+@font-face {
+    font-family: lcd;
+    src: url(http://asset/racing/gui/build/fonts/lcd.TTF);
+}
+
 .needle {
     position: absolute;
     left:   125px;
@@ -26,7 +31,9 @@
 }
 
 .textSpeed {
+    font-family: lcd;
     text-align: center;
     font-size: 24px;
     margin-top: 180px;
+    color: white;
 }

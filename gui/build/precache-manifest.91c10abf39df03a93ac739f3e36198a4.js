@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/racing/gui/build/index.html"
   },
   {
-    "revision": "2f6a8c7fe05f85436762",
+    "revision": "0f3dfe41521193161ae8",
     "url": "/racing/gui/build/static/css/main.css"
   },
   {
@@ -16,7 +16,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/racing/gui/build/static/js/2.chunk.js.LICENSE"
   },
   {
-    "revision": "2f6a8c7fe05f85436762",
+    "revision": "0f3dfe41521193161ae8",
     "url": "/racing/gui/build/static/js/main.chunk.js"
   },
   {
