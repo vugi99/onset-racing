@@ -380,3 +380,44 @@ end)
 AddRemoteEvent("imafk",function(ply)
     KickPlayer(ply,"Afk")
 end)
+
+local locktimer = nil
+local lockyaw = nil
+
+function refreshyaw(ply)
+   if IsValidPlayer(ply) then
+   local veh = GetPlayerVehicle(ply)
+   local rx,ry,rz = GetVehicleRotation(veh)
+   if veh~=0 then
+      SetVehicleRotation(veh,rx,lockyaw,rz)
+   end
+else
+   DestroyTimer(locktimer)
+   locktimer = nil
+   localyaw = nil
+end
+end
+
+AddCommand("lockyaw",function(ply,yaw)
+    if dev then
+       if yaw then
+         yaw = tonumber(yaw)
+           lockyaw=yaw
+           if locktimer then
+              DestroyTimer(locktimer)
+           end
+           locktimer = CreateTimer(refreshyaw,1000,ply)
+            local veh = GetPlayerVehicle(ply)
+            local rx,ry,rz = GetVehicleRotation(veh)
+            if veh~=0 then
+               SetVehicleRotation(veh,rx,lockyaw,rz)
+            end
+         else
+            if locktimer then
+               DestroyTimer(locktimer)
+               locktimer = nil
+               localyaw = nil
+            end
+       end
+    end
+end)
