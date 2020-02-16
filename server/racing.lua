@@ -190,15 +190,17 @@ AddEvent("OnPlayerQuit",function(ply)
         table.remove(finishclassement,i)
       end
   end
+  if #playerscheckpoints>0 then
   for i,v in ipairs(notready) do
    if v==ply then
-      table.remove(notready,v)
-      if #notready==0 then
+      if #notready<=1 then
          for i,v in ipairs(playerscheckpoints) do
             if #playerscheckpoints>0 then
             CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
             end
          end
+      end
+      table.remove(notready,i)
       end
    end
 end
@@ -436,12 +438,12 @@ end)
 AddRemoteEvent("Readytostart",function(ply)
    for i,v in ipairs(notready) do
       if v==ply then
-         table.remove(notready,v)
-         if #notready==0 then
+         if #notready<=1 then
             for i,v in ipairs(playerscheckpoints) do
                CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
             end
          end
+         table.remove(notready,i)
       end
    end
 end)
