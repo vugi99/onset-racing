@@ -294,10 +294,12 @@ end)
 
 AddRemoteEvent("returncar_racing",function(ply)
    local veh = GetPlayerVehicle(ply)
+   if IsValidVehicle(veh) then
    local rx,ry,rz = GetVehicleRotation(veh)
    SetVehicleRotation(veh, 0,ry,0)
    SetVehicleLinearVelocity(veh, 0, 0, 0 ,true)
    SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
+   end
 end)
 
 AddCommand("race",function(ply,id)
