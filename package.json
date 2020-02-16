@@ -13,6 +13,7 @@
                 "client/cl_clothes.lua",
                 "client/gui.lua",
                 "models/paks.lua",
+                "client/json.lua",
                 "client/radio.lua"
         ],
         "files": [

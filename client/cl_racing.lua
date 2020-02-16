@@ -70,6 +70,8 @@ end
 
 AddEvent("OnPackageStart",function()
     CreateTimer(update_compteur, 100)
+    ShowWeaponHUD(false)
+    ShowHealthHUD(false)
 end)
 
 AddRemoteEvent("hidecheckpoint",function(id)
@@ -82,7 +84,7 @@ AddRemoteEvent("hidecheckpoint",function(id)
         local csound = CreateSound("sounds/checkpoint.mp3")
         SetSoundVolume(csound, 0.6)
         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Finish Line")
-        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time)
+        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time, curindex)
     elseif curindex+1==#checkpoints+1 then
         compteur_state=false
         CreateSound("sounds/race_end.mp3")
@@ -90,14 +92,14 @@ AddRemoteEvent("hidecheckpoint",function(id)
             DestroyTimer(afk_timer)
             afk_timer=nil
         end
-        CallEvent("GUI:PlayerFinished", compteur_time)
+        CallEvent("GUI:PlayerFinished", compteur_time, place)
     elseif curindex+1<#checkpoints then
         GetObjectActor(id):SetActorHiddenInGame(true)
         table.insert(checkpoints_hide,id)
         local csound = CreateSound("sounds/checkpoint.mp3")
         SetSoundVolume(csound, 0.6)
         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
-        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time)
+        CallEvent("GUI:PlayerPassedCheckpoint", compteur_time, curindex)
     end
 end)
 
