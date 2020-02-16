@@ -90,11 +90,15 @@ AddRemoteEvent("hidecheckpoint",function(id)
     end
 end)
 
-AddRemoteEvent("classement_update",function(placer,playercountr)
+AddRemoteEvent("classement_update",function(placer,playercountr,start)
     place=placer
     plycount=playercountr
-
     CallEvent("GUI:UpdatePlayerPosition", placer, playercountr)
+    if start then
+       Delay(2,function()
+            CallRemoteEvent("Readytostart")
+       end)
+    end
 end)
 
 function createstart(modelpath)
@@ -200,12 +204,14 @@ end)
 AddRemoteEvent("reset_checkpoints",function()
     curindex = 1
     checkpoints_hide = {}
+    if checkpoints then
     if waypoint==nil then
         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
      else
          DestroyWaypoint(waypoint)
          waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
      end
+    end
 end)
 
 function check_afk()

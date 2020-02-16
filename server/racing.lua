@@ -11,6 +11,8 @@ local finished = nil
 
 local playerscheckpoints = {}
 
+local notready = {}
+
 local finishclassement = {}
 
 local currace = 1
@@ -37,6 +39,7 @@ end
 
 function changerace()
    finishclassement = {}
+   notready = {}
    createcheckpoints(racesnumbers[currace])
    for i,v in ipairs(GetAllPlayers()) do
       if IsValidPlayer(v) then
@@ -44,11 +47,11 @@ function changerace()
          tbl.ply = v
          tbl.number = 0
          table.insert(playerscheckpoints,tbl)
-         CallRemoteEvent(v,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
+         table.insert(notready,v)
          SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
          SetPlayerHealth(v, 0)
          CallRemoteEvent(v,"SpecRemoteEvent",false)
-         CallRemoteEvent(v,"classement_update",i,GetPlayerCount())
+         CallRemoteEvent(v,"classement_update",i,GetPlayerCount(),true)
       end
    end
 end
@@ -75,13 +78,7 @@ function spawnveh(ply,id,first)
    end
    local px,py,pz = GetPlayerLocation(ply)
    local h = GetPlayerHeading(ply)
-   local veh = nil
-   if custompos then
-      veh = CreateVehicle(id, x, y, z)
-      SetVehicleRotation(veh, rx, ry, rz)
-   else
-       veh = CreateVehicle(id, px, py, pz , h)
-   end
+   local veh = CreateVehicle(id, px, py, pz , h)
    SetVehicleLicensePlate(veh, "RACING")
    SetVehicleRespawnParams(veh, false)
    AttachVehicleNitro(veh,nitro)
@@ -193,6 +190,18 @@ AddEvent("OnPlayerQuit",function(ply)
         table.remove(finishclassement,i)
       end
   end
+  for i,v in ipairs(notready) do
+   if v==ply then
+      table.remove(notready,v)
+      if #notready==0 then
+         for i,v in ipairs(playerscheckpoints) do
+            if #playerscheckpoints>0 then
+            CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
+            end
+         end
+      end
+   end
+end
    if GetPlayerCount()<2 then
       for i,v in ipairs(checkpoints) do
          DestroyObject(v)
@@ -422,4 +431,17 @@ AddCommand("lockyaw",function(ply,yaw)
             end
        end
     end
+end)
+
+AddRemoteEvent("Readytostart",function(ply)
+   for i,v in ipairs(notready) do
+      if v==ply then
+         table.remove(notready,v)
+         if #notready==0 then
+            for i,v in ipairs(playerscheckpoints) do
+               CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
+            end
+         end
+      end
+   end
 end)

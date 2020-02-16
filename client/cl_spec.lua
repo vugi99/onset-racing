@@ -123,6 +123,6 @@ AddEvent("OnRenderHUD", function()
 end)
 
 function OnScriptError(message)
-     AddPlayerChatAll('<span color="#ff0000bb" style="bold" size="10">'..message..'</>')
+     AddPlayerChat('<span color="#ff0000bb" style="bold" size="10">'..message..'</>')
 end
 AddEvent("OnScriptError", OnScriptError)
