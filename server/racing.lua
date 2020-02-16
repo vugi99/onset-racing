@@ -195,9 +195,7 @@ AddEvent("OnPlayerQuit",function(ply)
    if v==ply then
       if #notready<=1 then
          for i,v in ipairs(playerscheckpoints) do
-            if #playerscheckpoints>0 then
             CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
-            end
          end
       end
       table.remove(notready,i)

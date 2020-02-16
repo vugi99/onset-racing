@@ -95,7 +95,7 @@ AddRemoteEvent("classement_update",function(placer,playercountr,start)
     plycount=playercountr
     CallEvent("GUI:UpdatePlayerPosition", placer, playercountr)
     if start then
-       Delay(2,function()
+       Delay(2000,function()
             CallRemoteEvent("Readytostart")
        end)
     end
