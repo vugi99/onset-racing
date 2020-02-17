@@ -85,6 +85,7 @@ function spawnveh(ply,id,first)
    local tbin = {}
    tbin.ply = ply
    tbin.vid = veh
+   tbin.vhp = GetVehicleHealth(veh)
    table.insert(plyvehs,tbin)
    if first == true then
       local ping = GetPlayerPing(ply)
@@ -159,16 +160,18 @@ AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
 end)
 
 AddEvent("OnGameTick",function()
-    for i,v in ipairs(GetAllVehicles()) do
-      SetVehicleHealth(v, 5000)
-      SetVehicleDamage(v, 1, 0.0)
-      SetVehicleDamage(v, 2, 0.0)
-      SetVehicleDamage(v, 3, 0.0)
-      SetVehicleDamage(v, 4, 0.0)
-      SetVehicleDamage(v, 5, 0.0)
-      SetVehicleDamage(v, 6, 0.0)
-      SetVehicleDamage(v, 7, 0.0)
-      SetVehicleDamage(v, 8, 0.0)
+    for i,v in ipairs(plyvehs) do
+      if v.vhp > GetVehicleHealth(v.vid) then
+         SetVehicleHealth(v.vid, v.vhp)
+         SetVehicleDamage(v.vid, 1, 0.0)
+         SetVehicleDamage(v.vid, 2, 0.0)
+         SetVehicleDamage(v.vid, 3, 0.0)
+         SetVehicleDamage(v.vid, 4, 0.0)
+         SetVehicleDamage(v.vid, 5, 0.0)
+         SetVehicleDamage(v.vid, 6, 0.0)
+         SetVehicleDamage(v.vid, 7, 0.0)
+         SetVehicleDamage(v.vid, 8, 0.0)
+      end
     end
 end)
 
