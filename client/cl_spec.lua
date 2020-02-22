@@ -121,8 +121,3 @@ AddEvent("OnRenderHUD", function()
         DrawText(5, 350, "Press E to change the spectated player")
     end
 end)
-
-function OnScriptError(message)
-     AddPlayerChat('<span color="#ff0000bb" style="bold" size="10">'..message..'</>')
-end
-AddEvent("OnScriptError", OnScriptError)

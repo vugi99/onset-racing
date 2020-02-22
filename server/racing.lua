@@ -1,8 +1,10 @@
 local nitro = true
-local dev = true
-local time_after_finish_ms = 60000
+local dev = false
+local time_after_finish_ms = 60000 
 local time_bef_start_s = 6
 local car = 12
+
+
 
 local plyvehs = {}
 local checkpoints = nil
@@ -399,7 +401,6 @@ AddRemoteEvent("changespec",function(ply,spectated)
 end)
 
 function speclogic(cmdply,ply)
-   print(cmdply,ply)
        AddPlayerChat(cmdply,"You are spectating " .. GetPlayerName(ply))
        local x, y, z = GetPlayerLocation(ply)
        CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
