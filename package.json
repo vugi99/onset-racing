@@ -1,39 +1,57 @@
 {
-	"author": "Voltaism & DeadlyKungFu.Ninja",
-	"version": "1.0",
-        "onset_build": "1.0.3",
-        "server_scripts": [
-                "server/racing.lua",
-                "server/clothes.lua",
-                "server/races.lua"
-        ],
-        "client_scripts": [
-                "client/cl_racing.lua",
-                "client/cl_spec.lua",
-                "client/cl_clothes.lua",
-                "client/gui.lua",
-                "models/paks.lua",
-                "client/json.lua",
-                "client/radio.lua"
-        ],
-        "files": [
-                "gui/build/index.html",
-                "gui/build/gauge.png",
-                "gui/build/fonts/fr.ttf",
-                "gui/build/fonts/sr.ttf",
-                "gui/build/fonts/lcd.TTF",
-                "gui/build/fonts/sr_i.ttf",
-                "gui/build/fonts/sr_n.ttf",
-                "gui/build/fonts/sr_ni.ttf",
-                "gui/build/static/css/main.css",
-                "gui/build/static/js/2.chunk.js",
-                "gui/build/static/js/main.chunk.js",
-                "gui/build/static/js/runtime-main.js",
-                "sounds/race_end.mp3",
-                "sounds/race_start.mp3",
-                "sounds/checkpoint.mp3",
-                "models/finishline.pak",
-                "models/finishlinerouge.pak",
-                "models/finishlinevert.pak"
-        ]
+  "author": "Voltaism & DeadlyKungFu.Ninja",
+  "version": "1.0",
+  "onset_build": "1.0.3",
+  "client_scripts": [
+    "client/cl_racing.lua",
+    "client/cl_spec.lua",
+    "client/cl_clothes.lua",
+    "client/gui.lua",
+    "models/paks.lua",
+    "client/json.lua",
+    "client/radio.lua"
+  ],
+  "server_scripts": [
+    "server/racing.lua",
+    "server/clothes.lua",
+    "server/races.lua"
+  ],
+  "files": [
+    "gui/build/index.html",
+    "gui/build/gauge.png",
+    "gui/build/fonts/fr.ttf",
+    "gui/build/fonts/sr.ttf",
+    "gui/build/fonts/lcd.TTF",
+    "gui/build/fonts/sr_i.ttf",
+    "gui/build/fonts/sr_n.ttf",
+    "gui/build/fonts/sr_ni.ttf",
+    "gui/build/static/css/main.css",
+    "gui/build/static/js/2.chunk.js",
+    "gui/build/static/js/main.chunk.js",
+    "gui/build/static/js/runtime-main.js",
+    "sounds/race_end.mp3",
+    "sounds/race_start.mp3",
+    "sounds/checkpoint.mp3",
+    "models/finishline.pak",
+    "models/finishlinerouge.pak",
+    "models/finishlinevert.pak"
+  ],
+  "auto_updater": {
+    "gui/build/static/js/runtime-main.js": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/static/js/runtime-main.js",
+    "server/clothes.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/clothes.lua",
+    "client/cl_spec.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/cl_spec.lua",
+    "gui/build/static/js/2.chunk.js": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/static/js/2.chunk.js",
+    "server/races.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/races.lua",
+    "models/paks.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/models/paks.lua",
+    "client/gui.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/gui.lua",
+    "gui/build/static/css/main.css": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/static/css/main.css",
+    "gui/build/index.html": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/index.html",
+    "client/cl_clothes.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/cl_clothes.lua",
+    "client/cl_racing.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/cl_racing.lua",
+    "client/radio.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/radio.lua",
+    "client/json.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/json.lua",
+    "package.json": "https://raw.githubusercontent.com/vugi99/onset-racing/master/package.json",
+    "gui/build/static/js/main.chunk.js": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/static/js/main.chunk.js",
+    "server/racing.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/racing.lua"
+  }
 }
