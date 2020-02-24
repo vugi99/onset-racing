@@ -1,6 +1,6 @@
 local nitro = true
 local dev = false
-local time_after_finish_ms = 60000 
+local time_after_finish_ms = 60000
 local time_bef_start_s = 6
 local car = 12
 
@@ -50,7 +50,7 @@ function changerace()
       if IsValidPlayer(v) then
          local tbl = {}
          tbl.ply = v
-         tbl.number = 0
+         tbl.number = 1
          table.insert(playerscheckpoints,tbl)
          table.insert(notready,v)
          SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
@@ -113,8 +113,6 @@ AddEvent("OnPlayerSpawn", function(ply)
       if v.ply == ply then
          found=true
          spawnveh(ply,car,true)
-         v.number = 1
-         CallRemoteEvent(ply,"reset_checkpoints")
       end
    end
    if not found then
@@ -248,6 +246,8 @@ function timercheck()
             if z>0 then
             if GetDistance2D(x, y, races[racesnumbers[currace]][i2+1][1], races[racesnumbers[currace]][i2+1][2])<750 then
                v.number=i2+1
+               local vh = GetVehicleHeading(GetPlayerVehicle(v.ply))
+               SetPlayerSpawnLocation(v.ply, x, y, z+200, vh)
                CallRemoteEvent(v.ply,"hidecheckpoint",vc)
                local place = 0
  
@@ -265,10 +265,7 @@ function timercheck()
                
             end
          else
-            AddPlayerChat(v.ply,"Reseting your car")
-            v.number = 1
             SetPlayerHealth(v.ply, 0)
-            CallRemoteEvent(v.ply,"reset_checkpoints")
          end
            end
         end

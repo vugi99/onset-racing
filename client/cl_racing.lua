@@ -202,19 +202,6 @@ AddRemoteEvent("Start_finish_timer", function(time_ms,isdestroy)
     end
 end) 
 
-AddRemoteEvent("reset_checkpoints",function()
-    curindex = 1
-    checkpoints_hide = {}
-    if checkpoints then
-    if waypoint==nil then
-        waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
-     else
-         DestroyWaypoint(waypoint)
-         waypoint=CreateWaypoint(checkpoints[curindex+1][1], checkpoints[curindex+1][2], checkpoints[curindex+1][3], "Checkpoint " .. curindex)
-     end
-    end
-end)
-
 function check_afk()
    local x,y,z = GetPlayerLocation(GetPlayerId())
    if (x~=afk_posx or y ~= afk_posy) then

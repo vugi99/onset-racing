@@ -41,11 +41,16 @@ AddEvent("GUI:PlayerFinished", function(compteur_time, position)
     end
 end)
 
+local lastnb = -1
+
 AddEvent("GUI:PlayerPassedCheckpoint", function(compteur_time, nb)
     if gui then
+        lastnb = nb
         ExecuteWebJS(gui, "PlayerPassedCheckpoint('"..json.stringify({time = compteur_time, nb = nb}).."')")
         Delay(2000, function()
-            ExecuteWebJS(gui, "HideCheckPoint('"..compteur_time.."')")
+            if lastnb == nb then
+               ExecuteWebJS(gui, "HideCheckPoint('"..compteur_time.."')")
+            end
         end)
     end
 end)
