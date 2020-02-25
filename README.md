@@ -12,7 +12,7 @@
 * if someone joins a server and the players in the game are not playing , they will be kicked after some time
 
 #### Keys
-* E to return the car
+* R to return the car
 * C to return to the last checkpoint
 * Y to toggle the radio (NCS radio)
 
