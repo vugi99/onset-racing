@@ -1,6 +1,6 @@
 {
   "author": "Voltaism & DeadlyKungFu.Ninja",
-  "version": "1.2",
+  "version": "1.3",
   "onset_build": "1.0.3",
   "client_scripts": [
     "client/cl_racing.lua",
@@ -53,6 +53,7 @@
     "client/json.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/client/json.lua",
     "package.json": "https://raw.githubusercontent.com/vugi99/onset-racing/master/package.json",
     "gui/build/static/js/main.chunk.js": "https://raw.githubusercontent.com/vugi99/onset-racing/master/gui/build/static/js/main.chunk.js",
-    "server/racing.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/racing.lua"
+    "server/racing.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/racing.lua",
+    "server/VehicleEngine.lua": "https://raw.githubusercontent.com/vugi99/onset-racing/master/server/VehicleEngine.lua"
   }
 }
