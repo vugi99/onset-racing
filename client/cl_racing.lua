@@ -1,6 +1,5 @@
 
-LoadPak("finishlinerouge", "/finishlinerouge/", "../../../OnsetModding/Plugins/finishlinerouge/Content")
-LoadPak("finishlinevert", "/finishlinevert/", "../../../OnsetModding/Plugins/finishlinevert/Content")
+LoadPak("finish", "/Racing/", "../../../OnsetModding/Plugins/Racing/Content")
 
 local curstartlinemodel = nil
 
@@ -138,7 +137,7 @@ function decompte_update()
     decompte=nil
     compteur_time=0
     compteur_state=true
-    createstart("/finishlinevert/finishlinesignvert")
+    createstart("/Racing/finishlinesignvert")
     CallEvent("GUI:NotifyCountValue", -1)
    end
 end
@@ -150,7 +149,7 @@ AddRemoteEvent("checkpointstbl",function(tbl,temps)
     SetIgnoreMoveInput(true)
     checkpoints_hide = {}
     decompte = CreateTimer(decompte_update,temps*1000/temps)
-    createstart("/finishlinerouge/finishlinesignrouge")
+    createstart("/Racing/finishlinesignrouge")
     if afk_timer then
         DestroyTimer(afk_timer)
         afk_timer=nil
@@ -218,4 +217,3 @@ AddRemoteEvent("startlookingforafk",function()
     afk_posy=y
     local afk_timer = CreateTimer(check_afk,120000)
 end)
-

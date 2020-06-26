@@ -1,4 +1,5 @@
 local nitro = true
+local backfire = true
 local dev = false
 local time_after_finish_ms = 60000
 local time_bef_start_s = 6
@@ -30,7 +31,7 @@ function createcheckpoints(mapname)
    checkpoints = {}
    for i,v in ipairs(races[mapname]) do
          if i+1 == #races[mapname] then
-            local obj = CreateObject(52, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, races[mapname][i+1][4], 0, 1, 1, 1)
+            local obj = CreateObject(111111, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, races[mapname][i+1][4], 0, 1, 1, 1)
           table.insert(checkpoints,obj)
          else
             if races[mapname][i+1] then
@@ -65,7 +66,7 @@ end
 AddEvent("OnPlayerJoin", function(ply)
    if GetPlayerCount()<=16 then
       SetPlayerSpawnLocation(ply, spawns[racesnumbers[currace]][2][1], spawns[racesnumbers[currace]][2][2], 0, spawns[racesnumbers[currace]][1])
-   SetPlayerRespawnTime(ply, 500)
+      SetPlayerRespawnTime(ply, 500)
    if not checkpoints then
       changerace()
    end
@@ -86,7 +87,8 @@ function spawnveh(ply,id,first)
    local veh = CreateVehicle(id, px, py, pz , h)
    SetVehicleLicensePlate(veh, "RACING")
    SetVehicleRespawnParams(veh, false)
-   AttachVehicleNitro(veh,nitro)
+   AttachVehicleNitro(veh, nitro)
+   EnableVehicleBackfire(veh, backfire)
    local tbin = {}
    tbin.ply = ply
    tbin.vid = veh

@@ -1,9 +1,7 @@
 function OnPackageStart()
-	local pakname = "finishline"
-	local res = LoadPak(pakname, "/finishline/", "../../../OnsetModding/Plugins/finishline/Content")
 
 
-	res = ReplaceObjectModelMesh(52, "/finishline/finishlinesign")
+	res = ReplaceObjectModelMesh(111111, "/Racing/finishlinesign")
 
 end
 AddEvent("OnPackageStart", OnPackageStart)
