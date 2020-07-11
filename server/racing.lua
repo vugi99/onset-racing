@@ -194,13 +194,17 @@ AddEvent("OnPlayerQuit",function(ply)
       end
    end
 end
-   if GetPlayerCount()<2 then
+   if GetPlayerCount()>1 then
+      if #playerscheckpoints == 0 then
+         Delay(250,function()  -- wait some time so GetAllPlayers and GetPlayerCount won't return this player
+            checktorestart()
+         end)
+      end
+   elseif checkpoints then
       for i,v in ipairs(checkpoints) do
          DestroyObject(v)
-       end
-       checkpoints=nil
-   else
-       checktorestart()
+      end
+      checkpoints = nil
    end
 end)
 
@@ -227,8 +231,8 @@ function checktorestart()
          finished=false
          Delay(time_after_finish_ms,function()
             if finished == false then
-            playerscheckpoints={}
-            checktorestart()
+               playerscheckpoints={}
+               checktorestart()
             end
          end)
       end

@@ -1,6 +1,6 @@
 {
   "author": "Voltaism & DeadlyKungFu.Ninja",
-  "version": "1.4",
+  "version": "1.5",
   "onset_build": "1.2.1",
   "client_scripts": [
     "client/cl_racing.lua",
