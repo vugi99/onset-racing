@@ -24,21 +24,21 @@ local currace = 1
 
 function createcheckpoints(mapname)
    if checkpoints then
-       for i,v in ipairs(checkpoints) do
+       for i, v in ipairs(checkpoints) do
          DestroyObject(v)
        end
    end
    checkpoints = {}
-   for i,v in ipairs(races[mapname]) do
-         if i+1 == #races[mapname] then
-            local obj = CreateObject(111111, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, races[mapname][i+1][4], 0, 1, 1, 1)
-          table.insert(checkpoints,obj)
-         else
-            if races[mapname][i+1] then
-         local obj = CreateObject(336, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, 0, 0, 10, 10, 10)
-          table.insert(checkpoints,obj)
-            end
+   for i, v in ipairs(races[mapname]) do
+      if i + 1 == #races[mapname] then
+         local obj = CreateObject(111111, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, races[mapname][i+1][4], 0, 1, 1, 1)
+         table.insert(checkpoints, obj)
+      else
+         if races[mapname][i+1] then
+            local obj = CreateObject(336, races[mapname][i+1][1], races[mapname][i+1][2], races[mapname][i+1][3] , 0, 0, 0, 10, 10, 10)
+            table.insert(checkpoints, obj)
          end
+      end
    end
 end
 
@@ -47,42 +47,44 @@ function changerace()
    notready = {}
    lastclassement = {}
    createcheckpoints(racesnumbers[currace])
-   for i,v in ipairs(GetAllPlayers()) do
-      if IsValidPlayer(v) then
+   for i, v in ipairs(GetAllPlayers()) do
+      if (IsValidPlayer(v) and not GetPlayerPropertyValue(v, "Joining_Racing")) then
+         --print("called for " .. tostring(v))
          local tbl = {}
          tbl.ply = v
          tbl.number = 1
-         table.insert(playerscheckpoints,tbl)
-         table.insert(notready,v)
+         table.insert(playerscheckpoints, tbl)
+         table.insert(notready, v)
          SetPlayerSpawnLocation(v, spawns[racesnumbers[currace]][i+1][1], spawns[racesnumbers[currace]][i+1][2], spawns[racesnumbers[currace]][i+1][3], spawns[racesnumbers[currace]][1])
          SetPlayerHealth(v, 0)
          CallRemoteEvent(v,"SpecRemoteEvent",false)
-         CallRemoteEvent(v,"classement_update",i,GetPlayerCount(),true)
+         CallRemoteEvent(v,"classement_update", i, GetPlayerCount(), true)
       end
    end
 end
 
 
 AddEvent("OnPlayerJoin", function(ply)
-   if GetPlayerCount()<=16 then
+   SetPlayerPropertyValue(ply, "Joining_Racing", nil, false)
+   if GetPlayerCount() <= 16 then
       SetPlayerSpawnLocation(ply, spawns[racesnumbers[currace]][2][1], spawns[racesnumbers[currace]][2][2], 0, spawns[racesnumbers[currace]][1])
       SetPlayerRespawnTime(ply, 500)
-   if not checkpoints then
-      changerace()
+      if not checkpoints then
+         changerace()
+      end
+   else
+      KickPlayer(ply, "Max 16 players")
    end
-else
-   KickPlayer(ply, "Max 16 players")
-end
 end)
 
-function spawnveh(ply,id,first)
-   for i,v in ipairs(plyvehs) do
+function spawnveh(ply, id, first)
+   for i, v in ipairs(plyvehs) do
       if v.ply == ply then
          DestroyVehicle(v.vid)
          table.remove(plyvehs,i)
       end
    end
-   local px,py,pz = GetPlayerLocation(ply)
+   local px, py, pz = GetPlayerLocation(ply)
    local h = GetPlayerHeading(ply)
    local veh = CreateVehicle(id, px, py, pz , h)
    SetVehicleLicensePlate(veh, "RACING")
@@ -99,7 +101,7 @@ function spawnveh(ply,id,first)
       if ping == 0 then
           ping = 50
       else
-         ping=ping*6
+         ping = ping * 6
       end
       Delay(ping,function()
          SetPlayerInVehicle(ply, veh)
@@ -111,28 +113,27 @@ end
 
 AddEvent("OnPlayerSpawn", function(ply)
    local found = false
-   for i,v in ipairs(playerscheckpoints) do
+   for i, v in ipairs(playerscheckpoints) do
       if v.ply == ply then
-         found=true
+         found = true
          spawnveh(ply,car,true)
       end
    end
    if not found then
-      for i,v in ipairs(playerscheckpoints) do
-         local ping = GetPlayerPing(ply)
-         if ping == 0 then
-             ping = 50
-         else
-            ping=ping*6
-         end
-         for i,v in ipairs(playerscheckpoints) do
-            CallRemoteEvent(v.ply,"startlookingforafk")
-         end
-         Delay(ping,function()
-            speclogic(ply,playerscheckpoints[i].ply)
-         end)
-         break
+      local ping = GetPlayerPing(ply)
+      if ping == 0 then
+          ping = 50
+      else
+         ping = ping * 6
       end
+      for i, v in ipairs(playerscheckpoints) do
+         CallRemoteEvent(v.ply, "startlookingforafk")
+      end
+      Delay(ping,function()
+            if (IsValidPlayer(ply) and playerscheckpoints[1].ply) then
+               speclogic(ply, playerscheckpoints[1].ply)
+            end
+      end)
    end
 end)
 
@@ -144,7 +145,7 @@ AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
          for i,v in ipairs(plyvehs) do
             if v.ply == ply then
                DestroyVehicle(v.vid)
-               table.remove(plyvehs,i)
+               table.remove(plyvehs, i)
                local ping = GetPlayerPing(ply)
                if ping == 0 then
                    ping = 50
@@ -152,14 +153,13 @@ AddEvent("OnPlayerLeaveVehicle",function(ply,veh,seat)
                 ping=ping*6
                end
                Delay(ping,function()
-                  for i,v in ipairs(playerscheckpoints) do
-                     speclogic(ply,playerscheckpoints[i].ply)
-                     break
-                  end
+                   if (IsValidPlayer(ply) and playerscheckpoints[1].ply) then
+                      speclogic(ply, playerscheckpoints[1].ply)
+                   end
                end)
             end
          end
-         SetPlayerPropertyValue(ply,"leavingtospec",nil,false)
+         SetPlayerPropertyValue(ply, "leavingtospec", nil, false)
       end
    end
 end)
@@ -167,34 +167,34 @@ end)
 AddEvent("OnPlayerQuit",function(ply)
    for i,v in ipairs(plyvehs) do
       if v.ply == ply then
-         SetPlayerPropertyValue(ply,"leaving",true,false)
+         SetPlayerPropertyValue(ply, "leaving", true, false)
          DestroyVehicle(v.vid)
-         table.remove(plyvehs,i)
+         table.remove(plyvehs, i)
       end
    end
    for i,v in ipairs(playerscheckpoints) do
-       if v.ply == ply then
-         table.remove(playerscheckpoints,i)
-       end
+      if v.ply == ply then
+         table.remove(playerscheckpoints, i)
+      end
    end
    for i,v in ipairs(finishclassement) do
       if v == ply then
-        table.remove(finishclassement,i)
-      end
-  end
-  if #playerscheckpoints>0 then
-  for i,v in ipairs(notready) do
-   if v==ply then
-      if #notready<=1 then
-         for i,v in ipairs(playerscheckpoints) do
-            CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
-         end
-      end
-      table.remove(notready,i)
+         table.remove(finishclassement, i)
       end
    end
-end
-   if GetPlayerCount()>1 then
+   if #playerscheckpoints > 0 then
+      for i,v in ipairs(notready) do
+         if v==ply then
+            if #notready<=1 then
+               for i,v in ipairs(playerscheckpoints) do
+                  CallRemoteEvent(v.ply, "checkpointstbl", races[racesnumbers[currace]], time_bef_start_s)
+               end
+            end
+            table.remove(notready,i)
+         end
+      end
+   end
+   if GetPlayerCount() > 1 then
       if #playerscheckpoints == 0 then
          Delay(250,function()  -- wait some time so GetAllPlayers and GetPlayerCount won't return this player
             checktorestart()
@@ -212,11 +212,11 @@ end)
 
 function checktorestart()
    if #playerscheckpoints==0 then
-      for i,v in ipairs(GetAllPlayers()) do
-         CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,true)
+      for i, v in ipairs(GetAllPlayers()) do
+         CallRemoteEvent(v,"Start_finish_timer", time_after_finish_ms, true)
       end
-      finished=true
-      if #racesnumbers==currace then
+      finished = true
+      if #racesnumbers == currace then
          currace=1
          changerace()
       else
@@ -224,14 +224,14 @@ function checktorestart()
          changerace()
       end
    else
-      if #finishclassement==1 then
-         for i,v in ipairs(GetAllPlayers()) do
-            CallRemoteEvent(v,"Start_finish_timer",time_after_finish_ms,false)
+      if #finishclassement == 1 then
+         for i, v in ipairs(GetAllPlayers()) do
+            CallRemoteEvent(v,"Start_finish_timer", time_after_finish_ms, false)
          end
-         finished=false
+         finished = false
          Delay(time_after_finish_ms,function()
             if finished == false then
-               playerscheckpoints={}
+               playerscheckpoints = {}
                checktorestart()
             end
          end)
@@ -242,107 +242,111 @@ end
 
 
 function timercheck()
-   for i,v in ipairs(playerscheckpoints) do
-      if GetPlayerVehicle(v.ply)~=0 then
-         local veh = GetPlayerVehicle(v.ply)
-         if IsValidVehicle(veh) then
-        for i2,vc in ipairs(checkpoints) do
-           if i2+1==v.number+1 then
-            local x,y,z = GetVehicleLocation(veh)
-            if z>0 then
-            if GetDistance2D(x, y, races[racesnumbers[currace]][i2+1][1], races[racesnumbers[currace]][i2+1][2])<750 then
-               v.number=i2+1
-               local vh = GetVehicleHeading(GetPlayerVehicle(v.ply))
-               SetPlayerSpawnLocation(v.ply, x, y, z+200, vh)
-               CallRemoteEvent(v.ply,"hidecheckpoint",vc)
-               local place = 0
- 
-               if i2 == #checkpoints then
-                  table.insert(finishclassement,v.ply)
-                  place = #finishclassement
-                  CallRemoteEvent(v.ply,"classement_update",place,GetPlayerCount())
-                  table.remove(playerscheckpoints,i)
-                  if #playerscheckpoints>0 then
-                           SetPlayerPropertyValue(v.ply,"leavingtospec",true,false)
-                           RemovePlayerFromVehicle(v.ply)
+      for i, v in ipairs(playerscheckpoints) do
+         if GetPlayerVehicle(v.ply) ~= 0 then
+            local veh = GetPlayerVehicle(v.ply)
+            if IsValidVehicle(veh) then
+               for i2, vc in ipairs(checkpoints) do
+                  if i2 + 1 == v.number + 1 then
+                     local x,y,z = GetVehicleLocation(veh)
+                     if z > 0 then
+                        if GetDistance2D(x, y, races[racesnumbers[currace]][i2+1][1], races[racesnumbers[currace]][i2+1][2])<750 then
+                           v.number = i2 + 1
+                           local vh = GetVehicleHeading(GetPlayerVehicle(v.ply))
+                           SetPlayerSpawnLocation(v.ply, x, y, z + 200, vh)
+                           CallRemoteEvent(v.ply, "hidecheckpoint", vc)
+                           local place = 0
+            
+                           if i2 == #checkpoints then
+                              table.insert(finishclassement, v.ply)
+                              place = #finishclassement
+                              CallRemoteEvent(v.ply, "classement_update", place, GetPlayerCount())
+                              table.remove(playerscheckpoints, i)
+                              if #playerscheckpoints > 0 then
+                                 SetPlayerPropertyValue(v.ply, "leavingtospec", true, false)
+                                 RemovePlayerFromVehicle(v.ply)
+                              end
+                              for i3, v3 in ipairs(GetAllPlayers()) do
+                                 if IsValidPlayer(v3) then
+                                    AddPlayerChat(v3, "[Racing] : " .. GetPlayerName(v.ply) .. " finished " .. tostring(place))
+                                 end
+                              end
+                              checktorestart()
+                           end
+                        end
+                     else
+                        SetPlayerHealth(v.ply, 0)
+                     end
                   end
-                  checktorestart()
                end
-               
             end
-         else
-            SetPlayerHealth(v.ply, 0)
          end
-           end
-        end
+      end
+   for i,v in ipairs(plyvehs) do
+      if v.vhp > GetVehicleHealth(v.vid) then
+         SetVehicleHealth(v.vid, v.vhp)
+         SetVehicleDamage(v.vid, 1, 0.0)
+         SetVehicleDamage(v.vid, 2, 0.0)
+         SetVehicleDamage(v.vid, 3, 0.0)
+         SetVehicleDamage(v.vid, 4, 0.0)
+         SetVehicleDamage(v.vid, 5, 0.0)
+         SetVehicleDamage(v.vid, 6, 0.0)
+         SetVehicleDamage(v.vid, 7, 0.0)
+         SetVehicleDamage(v.vid, 8, 0.0)
       end
    end
-      end
-      for i,v in ipairs(plyvehs) do
-         if v.vhp > GetVehicleHealth(v.vid) then
-            SetVehicleHealth(v.vid, v.vhp)
-            SetVehicleDamage(v.vid, 1, 0.0)
-            SetVehicleDamage(v.vid, 2, 0.0)
-            SetVehicleDamage(v.vid, 3, 0.0)
-            SetVehicleDamage(v.vid, 4, 0.0)
-            SetVehicleDamage(v.vid, 5, 0.0)
-            SetVehicleDamage(v.vid, 6, 0.0)
-            SetVehicleDamage(v.vid, 7, 0.0)
-            SetVehicleDamage(v.vid, 8, 0.0)
-         end
-       end
-   for i,v in ipairs(GetAllPlayers()) do
-   if GetPlayerVehicle(v)~=0 then
-   local veh = GetPlayerVehicle(v)
-   if IsValidVehicle(veh) then
-   local place = #finishclassement+1
-   local pnumber = nil
-   local pindex = nil
-      for ic,vc in ipairs(playerscheckpoints) do
-         if vc.ply == v then
-             pnumber = vc.number
-             pindex = ic
-         end
-      end
-      if pnumber~=nil then
-         for ic,vc in ipairs(playerscheckpoints) do
-            if vc.ply ~= v then
-               if GetPlayerVehicle(vc.ply)~=0 then
-               local pveh = GetPlayerVehicle(vc.ply)
-               if IsValidVehicle(pveh) then
-                if vc.number > pnumber then
-                   place = place+1
-                elseif vc.number == pnumber then
-                    local x1,y1,z1 = GetVehicleLocation(veh)
-                    local dist1 = GetDistance2D(x1, y1, races[racesnumbers[currace]][pnumber+1][1], races[racesnumbers[currace]][pnumber+1][2])
-                    local x2,y2,z2 = GetVehicleLocation(pveh)
-                    local dist2 = GetDistance2D(x2, y2, races[racesnumbers[currace]][pnumber+1][1], races[racesnumbers[currace]][pnumber+1][2])
-                    if dist1>dist2 then
-                       place=place+1
-                    end
-                end
+   for i, v in ipairs(GetAllPlayers()) do
+      if GetPlayerVehicle(v) ~= 0 then
+         local veh = GetPlayerVehicle(v)
+         if IsValidVehicle(veh) then
+            local place = #finishclassement+1
+            local pnumber = nil
+            local pindex = nil
+            for ic,vc in ipairs(playerscheckpoints) do
+               if vc.ply == v then
+                  pnumber = vc.number
+                  pindex = ic
                end
             end
+            if pnumber~=nil then
+               for ic,vc in ipairs(playerscheckpoints) do
+                  if vc.ply ~= v then
+                     if GetPlayerVehicle(vc.ply)~=0 then
+                        local pveh = GetPlayerVehicle(vc.ply)
+                        if IsValidVehicle(pveh) then
+                           if vc.number > pnumber then
+                              place = place+1
+                           elseif vc.number == pnumber then
+                              local x1,y1,z1 = GetVehicleLocation(veh)
+                              local dist1 = GetDistance2D(x1, y1, races[racesnumbers[currace]][pnumber+1][1], races[racesnumbers[currace]][pnumber+1][2])
+                              local x2,y2,z2 = GetVehicleLocation(pveh)
+                              local dist2 = GetDistance2D(x2, y2, races[racesnumbers[currace]][pnumber+1][1], races[racesnumbers[currace]][pnumber+1][2])
+                              if dist1>dist2 then
+                                 place=place+1
+                              end
+                           end
+                        end
+                     end
+                  end
+               end
+               local lastpl = 0
+               for ilc,vlc in ipairs(lastclassement) do
+                  if vlc.ply == v then
+                     lastpl = vlc.lplace
+                     table.remove(lastclassement,ilc)
+                  end
+               end
+               if place ~= lastpl then
+                  local lc = {}
+                  lc.ply = v
+                  lc.lplace = place
+                  table.insert(lastclassement,lc)
+                  CallRemoteEvent(v,"classement_update", place, GetPlayerCount())
+               end
             end
-         end
-         local lastpl = 0
-         for ilc,vlc in ipairs(lastclassement) do
-            if vlc.ply == v then
-               lastpl = vlc.lplace
-               table.remove(lastclassement,ilc)
-            end
-         end
-         if place ~= lastpl then
-            local lc = {}
-            lc.ply = v
-            lc.lplace = place
-            table.insert(lastclassement,lc)
-            CallRemoteEvent(v,"classement_update",place,GetPlayerCount())
          end
       end
    end
-end
-end
 end
 
 AddEvent("OnPackageStart",function()
@@ -355,8 +359,8 @@ end)
 AddRemoteEvent("returncar_racing",function(ply)
    local veh = GetPlayerVehicle(ply)
    if IsValidVehicle(veh) then
-   local rx,ry,rz = GetVehicleRotation(veh)
-   SetVehicleRotation(veh, 0,ry,0)
+      local rx, ry, rz = GetVehicleRotation(veh)
+      SetVehicleRotation(veh, 0,ry,0)
    end
 end)
 
@@ -375,64 +379,61 @@ AddRemoteEvent("changespec",function(ply,spectated)
       local lookindex = false
       local found = false
       local compt = 0
-    for i,v in ipairs(playerscheckpoints) do
-      if lookindex then
-        speclogic(ply,v.ply)
-        break
-      end
-      compt=compt+1
-       if v.ply==spectated then
-         found = true
-          if compt==#playerscheckpoints then
-            for i,v in ipairs(playerscheckpoints) do
-               speclogic(ply,playerscheckpoints[i].ply)
-               break
-            end
-          else
-               lookindex=true
-          end
-       end
-    end
-    if not found then
       for i,v in ipairs(playerscheckpoints) do
-         speclogic(ply,playerscheckpoints[i].ply)
-         break
+         if lookindex then
+            speclogic(ply,v.ply)
+            break
+         end
+         compt=compt+1
+         if v.ply==spectated then
+            found = true
+            if compt == #playerscheckpoints then
+               speclogic(ply,playerscheckpoints[1].ply)
+            else
+               lookindex=true
+            end
+         end
       end
-    end
-    
+      if not found then
+         if playerscheckpoints[1] then
+            speclogic(ply,playerscheckpoints[1].ply)
+         end
+      end
    end
 end)
 
 function speclogic(cmdply,ply)
-       AddPlayerChat(cmdply,"You are spectating " .. GetPlayerName(ply))
-       local x, y, z = GetPlayerLocation(ply)
-       CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
+   AddPlayerChat(cmdply,"You are spectating " .. GetPlayerName(ply))
+   local x, y, z = GetPlayerLocation(ply)
+   CallRemoteEvent(cmdply,"SpecRemoteEvent",true,ply,x,y,z)
 end
 
 AddRemoteEvent("last_checkpoint",function(ply)
-     for i,v in ipairs(playerscheckpoints) do
-         if v.ply == ply then
-            if v.number == 1 then
-               SetPlayerHealth(ply,0)
-            else 
-               local veh = GetPlayerVehicle(ply)
-               local rx,ry,rz = GetVehicleRotation(veh)
-               SetVehicleRotation(veh, 0,ry,0)
-               SetVehicleLinearVelocity(veh, 0, 0, 0 ,true)
-               SetVehicleAngularVelocity(veh, 0, 0, 0 ,true)
-               SetVehicleLocation(veh,races[racesnumbers[currace]][v.number][1], races[racesnumbers[currace]][v.number][2], races[racesnumbers[currace]][v.number][3] + 200)
+   for i, v in ipairs(playerscheckpoints) do
+      if v.ply == ply then
+         if v.number == 1 then
+            SetPlayerHealth(ply, 0)
+         else
+            local veh = GetPlayerVehicle(ply)
+            if IsValidVehicle(veh) then
+               local rx, ry, rz = GetVehicleRotation(veh)
+               SetVehicleRotation(veh, 0, ry, 0)
+               SetVehicleLinearVelocity(veh, 0, 0, 0 , true)
+               SetVehicleAngularVelocity(veh, 0, 0, 0 , true)
+               SetVehicleLocation(veh, races[racesnumbers[currace]][v.number][1], races[racesnumbers[currace]][v.number][2], races[racesnumbers[currace]][v.number][3] + 200)
             end
          end
-     end
+      end
+   end
 end)
 
 AddCommand("showspawns",function(ply)
    if dev then
-    for i,v in ipairs(spawns[racesnumbers[currace]]) do
-        if i > 1 then
-         CreateObject(1363, v[1], v[2], v[3] , 0, spawns[racesnumbers[currace]][1], 0, 1, 1, 1)
-        end
-    end
+      for i, v in ipairs(spawns[racesnumbers[currace]]) do
+         if i > 1 then
+            CreateObject(1363, v[1], v[2], v[3] , 0, spawns[racesnumbers[currace]][1], 0, 1, 1, 1)
+         end
+      end
    end
 end)
 
@@ -445,51 +446,59 @@ local lockyaw = nil
 
 function refreshyaw(ply)
    if IsValidPlayer(ply) then
-   local veh = GetPlayerVehicle(ply)
-   local rx,ry,rz = GetVehicleRotation(veh)
-   if veh~=0 then
-      SetVehicleRotation(veh,rx,lockyaw,rz)
+      local veh = GetPlayerVehicle(ply)
+      local rx,ry,rz = GetVehicleRotation(veh)
+      if veh~=0 then
+         SetVehicleRotation(veh,rx,lockyaw,rz)
+      end
+   else
+      DestroyTimer(locktimer)
+      locktimer = nil
+      localyaw = nil
    end
-else
-   DestroyTimer(locktimer)
-   locktimer = nil
-   localyaw = nil
-end
 end
 
 AddCommand("lockyaw",function(ply,yaw)
-    if dev then
-       if yaw then
+   if dev then
+      if yaw then
          yaw = tonumber(yaw)
-           lockyaw=yaw
-           if locktimer then
-              DestroyTimer(locktimer)
-           end
-           locktimer = CreateTimer(refreshyaw,1000,ply)
-            local veh = GetPlayerVehicle(ply)
-            local rx,ry,rz = GetVehicleRotation(veh)
-            if veh~=0 then
-               SetVehicleRotation(veh,rx,lockyaw,rz)
-            end
-         else
-            if locktimer then
-               DestroyTimer(locktimer)
-               locktimer = nil
-               localyaw = nil
-            end
-       end
-    end
+         lockyaw=yaw
+         if locktimer then
+            DestroyTimer(locktimer)
+         end
+         locktimer = CreateTimer(refreshyaw,1000,ply)
+         local veh = GetPlayerVehicle(ply)
+         local rx,ry,rz = GetVehicleRotation(veh)
+         if veh~=0 then
+            SetVehicleRotation(veh, rx, lockyaw, rz)
+         end
+      else
+         if locktimer then
+            DestroyTimer(locktimer)
+            locktimer = nil
+            localyaw = nil
+         end
+      end
+   end
 end)
 
 AddRemoteEvent("Readytostart",function(ply)
    for i,v in ipairs(notready) do
-      if v==ply then
+      if v == ply then
          if #notready<=1 then
-            for i,v in ipairs(playerscheckpoints) do
+            for i, v in ipairs(playerscheckpoints) do
                CallRemoteEvent(v.ply,"checkpointstbl",races[racesnumbers[currace]],time_bef_start_s)
             end
          end
          table.remove(notready,i)
       end
    end
+end)
+
+AddEvent("OnPlayerServerAuth", function(ply)
+    SetPlayerPropertyValue(ply, "Joining_Racing", true, false)
+end)
+
+AddEvent("OnPlayerChat", function(ply, text)
+    AddPlayerChatAll(GetPlayerName(ply) .. " (" .. tostring(ply) .. ") : " .. text)
 end)
